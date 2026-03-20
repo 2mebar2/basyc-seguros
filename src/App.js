@@ -150,8 +150,8 @@ const App = () => {
   };
 
   const openWhatsApp = () => {
-    const message = "Hola, me gustaría obtener información sobre seguros y fianzas. ¿Podrían ayudarme?";
-    window.open(`https://wa.me/52 7224447736?text=${encodeURIComponent(message)}`, '_blank');
+const whatsappMessage = `Hola, mi nombre es ${formData.nombre}. Me gustaría obtener información sobre seguros. Mi teléfono es ${formData.telefono} y mi correo es ${formData.email}. Mensaje: ${formData.mensaje}`;
+window.open(`https://wa.me/527224447736?text=${encodeURIComponent(whatsappMessage)}`, '_blank');
   };
 
   return (
@@ -211,7 +211,7 @@ const App = () => {
                 src={require("./assets/brand/basyc-logo.png")}
                 alt="BASYC Seguros & Fianzas"
                 style={{
-                  height: '72px',
+                  height: '144px',
                   maxWidth: '220px',
                   objectFit: 'contain'
                 }}
