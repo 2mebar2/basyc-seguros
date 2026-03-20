@@ -239,44 +239,68 @@ const App = () => {
               alignItems: 'center'
             }}>
               {["Inicio", "Valores", "Servicios", "Aseguradoras", "Nosotros", "Contacto"].map((tab) => (
-                <button
-                  key={tab}
-                  onClick={() => scrollToSection(tab.toLowerCase())}
-                  style={{
-                    fontSize: '1rem',
-                    fontWeight: '500',
-                    color: activeTab === tab.toLowerCase() ? '#0056b3' : '#4b5563',
-                    backgroundColor: activeTab === tab.toLowerCase() ? '#e0f2fe' : 'transparent',
-                    border: '1px solid #e5e7eb',
-                    borderRadius: '0.5rem',
-                    padding: '0.5rem 0.875rem',
-                    cursor: 'pointer',
-                    transition: 'all 0.3s ease',
-                    whiteSpace: 'nowrap'
-                  }}
-                >
-                  {tab}
-                </button>
-              ))}
+  <button
+    key={tab}
+    onClick={() => scrollToSection(tab.toLowerCase())}
+    style={{
+      fontSize: '1rem',
+      fontWeight: '500',
+      color: activeTab === tab.toLowerCase() ? '#0056b3' : '#4b5563',
+      backgroundColor: activeTab === tab.toLowerCase() ? '#e0f2fe' : 'transparent',
+      border: '1px solid #e5e7eb',
+      borderRadius: '0.5rem',
+      padding: '0.5rem 0.875rem',
+      cursor: 'pointer',
+      transition: 'all 0.3s ease',
+      whiteSpace: 'nowrap'
+    }}
+  >
+    {tab}
+  </button>
+))}
 
-              {/* Botón Cotizador */}
-              <button
-                onClick={() => window.open("https://basyc-cotizador-kfsromqzoqnmtrbrntdyr6.streamlit.app", "_blank")}
-                style={{
-                  fontSize: '1rem',
-                  fontWeight: '600',
-                  color: '#0056b3',
-                  backgroundColor: '#f0f9ff',
-                  border: '1px solid #bae6fd',
-                  borderRadius: '0.5rem',
-                  padding: '0.5rem 0.875rem',
-                  cursor: 'pointer',
-                  transition: 'all 0.3s ease',
-                  whiteSpace: 'nowrap'
-                }}
-              >
-                Cotizador
-              </button>
+{/* Botones especiales: Cotizador y Acceso a Clientes */}
+<button
+  onClick={() => {
+    setActiveTab("under-construction");
+    scrollToSection("under-construction");
+  }}
+  style={{
+    fontSize: '1rem',
+    fontWeight: '600',
+    color: activeTab === "under-construction" ? '#0056b3' : '#0056b3',
+    backgroundColor: '#f0f9ff',
+    border: '1px solid #bae6fd',
+    borderRadius: '0.5rem',
+    padding: '0.5rem 0.875rem',
+    cursor: 'pointer',
+    transition: 'all 0.3s ease',
+    whiteSpace: 'nowrap'
+  }}
+>
+  Cotizador
+</button>
+
+<button
+  onClick={() => {
+    setActiveTab("under-construction");
+    scrollToSection("under-construction");
+  }}
+  style={{
+    fontSize: '1rem',
+    fontWeight: '600',
+    color: '#0056b3',
+    backgroundColor: '#fef3c7',
+    border: '1px solid #f59e0b',
+    borderRadius: '0.5rem',
+    padding: '0.5rem 0.875rem',
+    cursor: 'pointer',
+    transition: 'all 0.3s ease',
+    whiteSpace: 'nowrap'
+  }}
+>
+  Acceso a Clientes
+</button>
             </nav>
           </div>
         </header>
@@ -561,6 +585,50 @@ const App = () => {
             )}
           </div>
         </section>
+
+{/* Under Construction Section */}
+<section id="under-construction" style={{ display: activeTab === "under-construction" ? "block" : "none" }}>
+  <div style={{
+    minHeight: '100vh',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#f9fafb',
+    padding: '2rem',
+    textAlign: 'center'
+  }}>
+    <div style={{
+      maxWidth: '600px',
+      padding: '2rem',
+      backgroundColor: 'white',
+      borderRadius: '1rem',
+      boxShadow: '0 10px 30px rgba(0,0,0,0.05)',
+      border: '1px solid #e5e7eb'
+    }}>
+      <div style={{ fontSize: '4rem', marginBottom: '1.5rem' }}>🚧</div>
+      <h1 style={{ fontSize: '2.25rem', fontWeight: '700', color: '#1f2937', marginBottom: '1rem' }}>
+        En construcción
+      </h1>
+      <p style={{ fontSize: '1.125rem', color: '#4b5563', marginBottom: '2rem' }}>
+        Estamos desarrollando el Cotizador interactivo y el Portal de Clientes. Pronto estarán disponibles.
+      </p>
+      <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+        <span style={{ background: '#e0f2fe', color: '#0056b3', padding: '0.5rem 1rem', borderRadius: '9999px', fontSize: '0.875rem' }}>
+          📅 Lanzamiento estimado: Q2 2026
+        </span>
+        <span style={{ background: '#fef3c7', color: '#92400e', padding: '0.5rem 1rem', borderRadius: '9999px', fontSize: '0.875rem' }}>
+          📞 ¿Necesitas cotización urgente?  
+          <a href="tel:+525555555555" style={{ color: '#92400e', fontWeight: 'bold' }}>Llámanos</a>
+        </span>
+      </div>
+      <p style={{ marginTop: '2rem', color: '#6b7280', fontStyle: 'italic' }}>
+        Gracias por confiar en BASYC — tu seguridad es nuestra prioridad.
+      </p>
+    </div>
+  </div>
+</section>
+
 
         {/* Nosotros */}
         <section id="nosotros" style={{
