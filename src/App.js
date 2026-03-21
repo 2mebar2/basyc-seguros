@@ -149,16 +149,17 @@ const App = () => {
     return colors[valor] || "#6b7280";
   };
 
-  const openWhatsApp = () => {
-    const message = "Hola, me gustaría obtener información sobre seguros y fianzas. ¿Podrían ayudarme?";
-    window.open(`https://wa.me/52 7224447736?text=${encodeURIComponent(message)}`, '_blank');
-  };
+     const openWhatsApp = () => {
+     const whatsappMessage = `Hola, mi nombre es ${formData.nombre}. Me gustaría obtener información sobre seguros. Mi teléfono es ${formData.telefono} y mi correo es ${formData.email}. Mensaje: ${formData.mensaje}`;
+     window.open(`https://wa.me/527224447736?text=${encodeURIComponent(whatsappMessage)}`, '_blank');
+   };
 
   return (
     <>
       {/* === ESTILOS GLOBALES === */}
       <style>
         {`
+
           body {
             margin: 0;
             padding: 0;
@@ -211,7 +212,7 @@ const App = () => {
                 src={require("./assets/brand/basyc-logo.png")}
                 alt="BASYC Seguros & Fianzas"
                 style={{
-                  height: '72px',
+                  height: '144px',
                   maxWidth: '220px',
                   objectFit: 'contain'
                 }}
@@ -239,44 +240,68 @@ const App = () => {
               alignItems: 'center'
             }}>
               {["Inicio", "Valores", "Servicios", "Aseguradoras", "Nosotros", "Contacto"].map((tab) => (
-                <button
-                  key={tab}
-                  onClick={() => scrollToSection(tab.toLowerCase())}
-                  style={{
-                    fontSize: '1rem',
-                    fontWeight: '500',
-                    color: activeTab === tab.toLowerCase() ? '#0056b3' : '#4b5563',
-                    backgroundColor: activeTab === tab.toLowerCase() ? '#e0f2fe' : 'transparent',
-                    border: '1px solid #e5e7eb',
-                    borderRadius: '0.5rem',
-                    padding: '0.5rem 0.875rem',
-                    cursor: 'pointer',
-                    transition: 'all 0.3s ease',
-                    whiteSpace: 'nowrap'
-                  }}
-                >
-                  {tab}
-                </button>
-              ))}
+  <button
+    key={tab}
+    onClick={() => scrollToSection(tab.toLowerCase())}
+    style={{
+      fontSize: '1rem',
+      fontWeight: '500',
+      color: activeTab === tab.toLowerCase() ? '#0056b3' : '#4b5563',
+      backgroundColor: activeTab === tab.toLowerCase() ? '#e0f2fe' : 'transparent',
+      border: '1px solid #e5e7eb',
+      borderRadius: '0.5rem',
+      padding: '0.5rem 0.875rem',
+      cursor: 'pointer',
+      transition: 'all 0.3s ease',
+      whiteSpace: 'nowrap'
+    }}
+  >
+    {tab}
+  </button>
+))}
 
-              {/* Botón Cotizador */}
-              <button
-                onClick={() => window.open("https://basyc-cotizador-kfsromqzoqnmtrbrntdyr6.streamlit.app", "_blank")}
-                style={{
-                  fontSize: '1rem',
-                  fontWeight: '600',
-                  color: '#0056b3',
-                  backgroundColor: '#f0f9ff',
-                  border: '1px solid #bae6fd',
-                  borderRadius: '0.5rem',
-                  padding: '0.5rem 0.875rem',
-                  cursor: 'pointer',
-                  transition: 'all 0.3s ease',
-                  whiteSpace: 'nowrap'
-                }}
-              >
-                Cotizador
-              </button>
+{/* Botones especiales: Cotizador y Acceso a Clientes */}
+<button
+  onClick={() => {
+    setActiveTab("under-construction");
+    scrollToSection("under-construction");
+  }}
+  style={{
+    fontSize: '1rem',
+    fontWeight: '600',
+    color: activeTab === "under-construction" ? '#0056b3' : '#0056b3',
+    backgroundColor: '#f0f9ff',
+    border: '1px solid #bae6fd',
+    borderRadius: '0.5rem',
+    padding: '0.5rem 0.875rem',
+    cursor: 'pointer',
+    transition: 'all 0.3s ease',
+    whiteSpace: 'nowrap'
+  }}
+>
+  Cotizador
+</button>
+
+<button
+  onClick={() => {
+    setActiveTab("under-construction");
+    scrollToSection("under-construction");
+  }}
+  style={{
+    fontSize: '1rem',
+    fontWeight: '600',
+    color: '#0056b3',
+    backgroundColor: '#fef3c7',
+    border: '1px solid #f59e0b',
+    borderRadius: '0.5rem',
+    padding: '0.5rem 0.875rem',
+    cursor: 'pointer',
+    transition: 'all 0.3s ease',
+    whiteSpace: 'nowrap'
+  }}
+>
+  Acceso a Clientes
+</button>
             </nav>
           </div>
         </header>
@@ -561,6 +586,50 @@ const App = () => {
             )}
           </div>
         </section>
+
+{/* Under Construction Section */}
+<section id="under-construction" style={{ display: activeTab === "under-construction" ? "block" : "none" }}>
+  <div style={{
+    minHeight: '100vh',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#f9fafb',
+    padding: '2rem',
+    textAlign: 'center'
+  }}>
+    <div style={{
+      maxWidth: '600px',
+      padding: '2rem',
+      backgroundColor: 'white',
+      borderRadius: '1rem',
+      boxShadow: '0 10px 30px rgba(0,0,0,0.05)',
+      border: '1px solid #e5e7eb'
+    }}>
+      <div style={{ fontSize: '4rem', marginBottom: '1.5rem' }}>🚧</div>
+      <h1 style={{ fontSize: '2.25rem', fontWeight: '700', color: '#1f2937', marginBottom: '1rem' }}>
+        En construcción
+      </h1>
+      <p style={{ fontSize: '1.125rem', color: '#4b5563', marginBottom: '2rem' }}>
+        Estamos desarrollando el Cotizador interactivo y el Portal de Clientes. Pronto estarán disponibles.
+      </p>
+      <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+        <span style={{ background: '#e0f2fe', color: '#0056b3', padding: '0.5rem 1rem', borderRadius: '9999px', fontSize: '0.875rem' }}>
+          📅 Lanzamiento estimado: Q2 2026
+        </span>
+        <span style={{ background: '#fef3c7', color: '#92400e', padding: '0.5rem 1rem', borderRadius: '9999px', fontSize: '0.875rem' }}>
+          📞 ¿Necesitas cotización urgente?  
+          <a href="tel:+525555555555" style={{ color: '#92400e', fontWeight: 'bold' }}>Llámanos</a>
+        </span>
+      </div>
+      <p style={{ marginTop: '2rem', color: '#6b7280', fontStyle: 'italic' }}>
+        Gracias por confiar en BASYC — tu seguridad es nuestra prioridad.
+      </p>
+    </div>
+  </div>
+</section>
+
 
         {/* Nosotros */}
         <section id="nosotros" style={{
@@ -900,28 +969,28 @@ const App = () => {
           </div>
         </footer>
 
-        {/* Botón WhatsApp flotante */}
-        <button
-          onClick={openWhatsApp}
-          style={{
-            position: 'fixed',
-            bottom: '2rem',
-            right: '2rem',
-            backgroundColor: '#25D366',
-            color: 'white',
-            width: '60px',
-            height: '60px',
-            borderRadius: '50%',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            boxShadow: '0 4px 15px rgba(37, 211, 102, 0.4)',
-            border: 'none',
-            cursor: 'pointer',
-            zIndex: 1000,
-            transition: 'all 0.3s ease',
-            animation: 'float 6s ease-in-out infinite'
-          }}
+//        {/* Botón WhatsApp flotante */}
+////        <button
+//          onClick={openWhatsApp}
+//          style={{
+//            position: 'fixed',
+//            bottom: '2rem',
+//            right: '2rem',
+ //           backgroundColor: '#25D366',
+ //           color: 'white',
+//            width: '60px',
+//            height: '60px',
+//            borderRadius: '50%',
+//            display: 'flex',
+//            alignItems: 'center',
+//            justifyContent: 'center',
+//            boxShadow: '0 4px 15px rgba(37, 211, 102, 0.4)',
+//            border: 'none',
+//            cursor: 'pointer',
+//            zIndex: 1000,
+//            transition: 'all 0.3s ease',
+//            animation: 'float 6s ease-in-out infinite'
+//          }}
         >
           <svg width="30" height="30" fill="currentColor" viewBox="0 0 24 24">
             <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67-.001-.198.15-.794.966-.966 1.164-.173.199-.347.223-.62.124-.272-.1-.966-.356-1.828-.966-.653-.472-1.089-1.001-1.458-1.58-.361-.567-.176-1.066.025-1.515.188-.42.399-.9-.1-.9-.486-.001-.83.459-1.038.65-.207.19-.793.965-1.164 1.164-.173.199-.347.248-.571.124-.226-.124-1.04-1.248-1.41-2.373-.362-1.11-.15-2.038.025-2.864.175-.81.87-2.115 1.258-2.865.396-.764.787-1.227 1.177-1.828.381-.588.851-.43 1.362-.37.508.06 1.588.399 3.091 1.227 1.5.81 2.486 2.486 2.661 2.661.175.175.025.45-.1.65-.126.199-.5.374-.966.624-.463.25-.966.499-1.091.748-.126.25-.001.499.175.748s.424.523.773.872c.35.348.773.722.972.995.199.274.374.199.723.025.35-.175.995-.924 1.17-1.099.173-.174.372-.099.621.025.25.124 1.174.923 1.423.1172.25.25.499.374.674.573.175.199.274.348.399.523.126.175.051.324-.025.499-.075.175-.67 1.573-1.04 2.096-.374.524-.698.449-.947.449z"/>
