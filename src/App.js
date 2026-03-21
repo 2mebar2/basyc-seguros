@@ -157,36 +157,35 @@ const App = () => {
   return (
     <>
       {/* === ESTILOS GLOBALES === */}
-      <style>
-        {`
+<style>
+  {`
+    body {
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      background: url('https://images.unsplash.com/photo-1450101499163-c8848c66ca85?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=30') center/cover no-repeat fixed;
+      background-color: #0056b3;
+      font-family: system-ui, -apple-system, sans-serif;
+    }
 
-          body {
-            margin: 0;
-            padding: 0;
-            min-height: 100vh;
-            background: url('https://images.unsplash.com/photo-1450101499163-c8848c66ca85?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=30') center/cover no-repeat fixed;
-            background-color: #0056b3;
-            font-family: system-ui, -apple-system, sans-serif;
-          }
+    .page-content {
+      background: transparent;
+      min-height: 100vh;
+      position: relative;
+      z-index: 1;
+    }
 
-          .page-content {
-            background: transparent;
-            min-height: 100vh;
-            position: relative;
-            z-index: 1;
-          }
+    @keyframes marquee {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-100%); }
+    }
 
-          @keyframes marquee {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-100%); }
-          }
-
-          @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-          }
-        `}
-      </style>
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+  `}
+</style>
 
       {/* === CONTENIDO PRINCIPAL === */}
       <div className="page-content">
