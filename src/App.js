@@ -149,16 +149,17 @@ const App = () => {
     return colors[valor] || "#6b7280";
   };
 
-  const openWhatsApp = () => {
-const whatsappMessage = `Hola, mi nombre es ${formData.nombre}. Me gustaría obtener información sobre seguros. Mi teléfono es ${formData.telefono} y mi correo es ${formData.email}. Mensaje: ${formData.mensaje}`;
-window.open(`https://wa.me/527224447736?text=${encodeURIComponent(whatsappMessage)}`, '_blank');
-  };
+     const openWhatsApp = () => {
+     const whatsappMessage = `Hola, mi nombre es ${formData.nombre}. Me gustaría obtener información sobre seguros. Mi teléfono es ${formData.telefono} y mi correo es ${formData.email}. Mensaje: ${formData.mensaje}`;
+     window.open(`https://wa.me/527224447736?text=${encodeURIComponent(whatsappMessage)}`, '_blank');
+   };
 
   return (
     <>
       {/* === ESTILOS GLOBALES === */}
       <style>
         {`
+
           body {
             margin: 0;
             padding: 0;
@@ -968,28 +969,28 @@ window.open(`https://wa.me/527224447736?text=${encodeURIComponent(whatsappMessag
           </div>
         </footer>
 
-        {/* Botón WhatsApp flotante */}
-        <button
-          onClick={openWhatsApp}
-          style={{
-            position: 'fixed',
-            bottom: '2rem',
-            right: '2rem',
-            backgroundColor: '#25D366',
-            color: 'white',
-            width: '60px',
-            height: '60px',
-            borderRadius: '50%',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            boxShadow: '0 4px 15px rgba(37, 211, 102, 0.4)',
-            border: 'none',
-            cursor: 'pointer',
-            zIndex: 1000,
-            transition: 'all 0.3s ease',
-            animation: 'float 6s ease-in-out infinite'
-          }}
+//        {/* Botón WhatsApp flotante */}
+////        <button
+//          onClick={openWhatsApp}
+//          style={{
+//            position: 'fixed',
+//            bottom: '2rem',
+//            right: '2rem',
+ //           backgroundColor: '#25D366',
+ //           color: 'white',
+//            width: '60px',
+//            height: '60px',
+//            borderRadius: '50%',
+//            display: 'flex',
+//            alignItems: 'center',
+//            justifyContent: 'center',
+//            boxShadow: '0 4px 15px rgba(37, 211, 102, 0.4)',
+//            border: 'none',
+//            cursor: 'pointer',
+//            zIndex: 1000,
+//            transition: 'all 0.3s ease',
+//            animation: 'float 6s ease-in-out infinite'
+//          }}
         >
           <svg width="30" height="30" fill="currentColor" viewBox="0 0 24 24">
             <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67-.001-.198.15-.794.966-.966 1.164-.173.199-.347.223-.62.124-.272-.1-.966-.356-1.828-.966-.653-.472-1.089-1.001-1.458-1.58-.361-.567-.176-1.066.025-1.515.188-.42.399-.9-.1-.9-.486-.001-.83.459-1.038.65-.207.19-.793.965-1.164 1.164-.173.199-.347.248-.571.124-.226-.124-1.04-1.248-1.41-2.373-.362-1.11-.15-2.038.025-2.864.175-.81.87-2.115 1.258-2.865.396-.764.787-1.227 1.177-1.828.381-.588.851-.43 1.362-.37.508.06 1.588.399 3.091 1.227 1.5.81 2.486 2.486 2.661 2.661.175.175.025.45-.1.65-.126.199-.5.374-.966.624-.463.25-.966.499-1.091.748-.126.25-.001.499.175.748s.424.523.773.872c.35.348.773.722.972.995.199.274.374.199.723.025.35-.175.995-.924 1.17-1.099.173-.174.372-.099.621.025.25.124 1.174.923 1.423.1172.25.25.499.374.674.573.175.199.274.348.399.523.126.175.051.324-.025.499-.075.175-.67 1.573-1.04 2.096-.374.524-.698.449-.947.449z"/>
