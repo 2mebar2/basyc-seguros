@@ -254,6 +254,7 @@ const App = () => {
       transition: 'all 0.3s ease',
       whiteSpace: 'nowrap'
     }}
+	
   >
     {tab}
   </button>
@@ -968,31 +969,43 @@ const App = () => {
           </div>
         </footer>
 
-{/* Botón WhatsApp flotante */}
-{/* Botón WhatsApp flotante */}
-<button
-  onClick={openWhatsApp}
+
+        {/* Botón flotante con tu logo personalizado */}
+        <button
+  onClick={() => {
+    if (window.Tawk_API && typeof window.Tawk_API.toggle === 'function') {
+      window.Tawk_API.toggle();
+    }
+  }}
   style={{
     position: 'fixed',
-    bottom: '90px', // Arriba del posible conflicto
+    bottom: '2rem',
     right: '2rem',
-    backgroundColor: '#25D366',
-    color: 'white',
-    width: '60px',
-    height: '60px',
+    width: '72px',     // 👈 Aumentado de 60px a 72px
+    height: '72px',    // 👈 Aumentado
     borderRadius: '50%',
+    backgroundColor: '#0056b3',
+    border: 'none',
+    cursor: 'pointer',
+    boxShadow: '0 6px 20px rgba(0, 86, 179, 0.5)',
+    zIndex: 1000,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    boxShadow: '0 4px 15px rgba(37, 211, 102, 0.4)',
-    border: 'none',
-    cursor: 'pointer',
-    zIndex: 999,
     transition: 'all 0.3s ease'
   }}
 >
-  <svg>📱</svg>
+  <img
+    src="/assets/brand/basyc-logo.jpg"
+    alt="Asistente BASYC"
+    style={{
+      width: '120px',   // 👈 Más grande
+      height: '120px',
+      objectFit: 'contain'
+    }}
+  />
 </button>
+
       </div>
     </>
   );
