@@ -2,6 +2,7 @@ import React, { useState } from "react";
 
 const App = () => {
   const [activeTab, setActiveTab] = useState("inicio");
+  const [menuOpen, setMenuOpen] = useState(false);
   const [selectedAseguradora, setSelectedAseguradora] = useState(null);
   const [formData, setFormData] = useState({
     nombre: "",
@@ -92,26 +93,26 @@ const App = () => {
 
   // --- Valores ---
   const valores = [
-    { 
-      nombre: "Seguridad", 
+    {
+      nombre: "Seguridad",
       icono: "🛡️",
       fondo: "https://placehold.co/600x400/0056b3/ffffff?text=Protección+Completa",
       descripcion: "Nuestra prioridad es proteger lo que más te importa. Con BASYC, tus bienes, tu familia y tu negocio están respaldados por coberturas integrales y las mejores aseguradoras del país."
     },
-    { 
-      nombre: "Armonía", 
+    {
+      nombre: "Armonía",
       icono: "☯️",
       fondo: "https://placehold.co/600x400/4CAF50/ffffff?text=Equilibrio+Familiar",
       descripcion: "Fomentamos relaciones equilibradas entre clientes, agentes y aseguradoras. Nuestro enfoque busca soluciones que beneficien a todos."
     },
-    { 
-      nombre: "Confianza", 
+    {
+      nombre: "Confianza",
       icono: "🤝",
       fondo: "https://placehold.co/600x400/FF9800/ffffff?text=Relación+de+Confianza",
       descripcion: "Construimos relaciones duraderas basadas en la transparencia y el cumplimiento. Más de 15 años de experiencia respaldan nuestro compromiso."
     },
-    { 
-      nombre: "Paz", 
+    {
+      nombre: "Paz",
       icono: "☮️",
       fondo: "https://placehold.co/600x400/9C27B0/ffffff?text=Tranquilidad+Total",
       descripcion: "Te ofrecemos tranquilidad absoluta. Al saber que estás protegido contra imprevistos, puedes enfocarte en lo que realmente importa."
@@ -149,43 +150,43 @@ const App = () => {
     return colors[valor] || "#6b7280";
   };
 
-     const openWhatsApp = () => {
-     const whatsappMessage = `Hola, mi nombre es ${formData.nombre}. Me gustaría obtener información sobre seguros. Mi teléfono es ${formData.telefono} y mi correo es ${formData.email}. Mensaje: ${formData.mensaje}`;
-     window.open(`https://wa.me/527224447736?text=${encodeURIComponent(whatsappMessage)}`, '_blank');
-   };
+  const openWhatsApp = () => {
+    const whatsappMessage = `Hola, mi nombre es ${formData.nombre}. Me gustaría obtener información sobre seguros. Mi teléfono es ${formData.telefono} y mi correo es ${formData.email}. Mensaje: ${formData.mensaje}`;
+    window.open(`https://wa.me/527224447736?text=${encodeURIComponent(whatsappMessage)}`, '_blank');
+  };
 
   return (
     <>
-{/* === ESTILOS GLOBALES === */}
-<style>
-  {`
-    body {
-      margin: 0;
-      padding: 0;
-      min-height: 100vh;
-      background: url('https://images.unsplash.com/photo-1450101499163-c8848c66ca85?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=30') center/cover no-repeat fixed;
-      background-color: #0056b3;
-      font-family: system-ui, -apple-system, sans-serif;
-    }
+      {/* === ESTILOS GLOBALES === */}
+      <style>
+        {`
+          body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            background: url('https://images.unsplash.com/photo-1450101499163-c8848c66ca85?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=30') center/cover no-repeat fixed;
+            background-color: #0056b3;
+            font-family: system-ui, -apple-system, sans-serif;
+          }
 
-    .page-content {
-      background: transparent;
-      min-height: 100vh;
-      position: relative;
-      z-index: 1;
-    }
+          .page-content {
+            background: transparent;
+            min-height: 100vh;
+            position: relative;
+            z-index: 1;
+          }
 
-    @keyframes marquee {
-      0% { transform: translateX(0); }
-      100% { transform: translateX(-100%); }
-    }
+          @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-100%); }
+          }
 
-    @keyframes float {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-10px); }
-    }
-  `}
-</style>
+          @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+          }
+        `}
+      </style>
 
       {/* === CONTENIDO PRINCIPAL === */}
       <div className="page-content">
@@ -232,77 +233,174 @@ const App = () => {
               </div>
             </div>
 
-            {/* Menú */}
-            <nav style={{
-              display: 'flex',
-              gap: '1rem',
-              alignItems: 'center'
-            }}>
-              {["Inicio", "Valores", "Servicios", "Aseguradoras", "Nosotros", "Contacto"].map((tab) => (
-  <button
-    key={tab}
-    onClick={() => scrollToSection(tab.toLowerCase())}
-    style={{
-      fontSize: '1rem',
-      fontWeight: '500',
-      color: activeTab === tab.toLowerCase() ? '#0056b3' : '#4b5563',
-      backgroundColor: activeTab === tab.toLowerCase() ? '#e0f2fe' : 'transparent',
-      border: '1px solid #e5e7eb',
-      borderRadius: '0.5rem',
-      padding: '0.5rem 0.875rem',
-      cursor: 'pointer',
-      transition: 'all 0.3s ease',
-      whiteSpace: 'nowrap'
-    }}
-	
-  >
-    {tab}
-  </button>
-))}
+{/* Menú */}
+<nav style={{
+  display: 'flex',
+  gap: '1rem',
+  alignItems: 'center'
+}}>
+  {/* Botón hamburguesa (solo visible en móvil) */}
+  <div style={{
+    display: window.innerWidth > 768 ? 'none' : 'block',
+    marginLeft: 'auto'
+  }}>
+    <button
+      onClick={() => setMenuOpen(!menuOpen)}
+      style={{
+        fontSize: '1.5rem',
+        backgroundColor: 'transparent',
+        border: 'none',
+        color: '#0056b3',
+        cursor: 'pointer'
+      }}
+    >
+      ☰
+    </button>
+  </div>
 
-{/* Botones especiales: Cotizador y Acceso a Clientes */}
-<button
-  onClick={() => {
-    setActiveTab("under-construction");
-    scrollToSection("under-construction");
-  }}
-  style={{
-    fontSize: '1rem',
-    fontWeight: '600',
-    color: activeTab === "under-construction" ? '#0056b3' : '#0056b3',
-    backgroundColor: '#f0f9ff',
-    border: '1px solid #bae6fd',
-    borderRadius: '0.5rem',
-    padding: '0.5rem 0.875rem',
-    cursor: 'pointer',
-    transition: 'all 0.3s ease',
-    whiteSpace: 'nowrap'
-  }}
->
-  Cotizador
-</button>
+  {/* Menú horizontal (solo escritorio) */}
+  <div style={{ display: window.innerWidth <= 768 ? 'none' : 'flex', gap: '1rem' }}>
+    {["Inicio", "Valores", "Servicios", "Aseguradoras", "Nosotros", "Contacto"].map((tab) => (
+      <button
+        key={tab}
+        onClick={() => scrollToSection(tab.toLowerCase())}
+        style={{
+          fontSize: '1rem',
+          fontWeight: '500',
+          color: activeTab === tab.toLowerCase() ? '#0056b3' : '#4b5563',
+          backgroundColor: activeTab === tab.toLowerCase() ? '#e0f2fe' : 'transparent',
+          border: '1px solid #e5e7eb',
+          borderRadius: '0.5rem',
+          padding: '0.5rem 0.875rem',
+          cursor: 'pointer',
+          transition: 'all 0.3s ease',
+          whiteSpace: 'nowrap'
+        }}
+      >
+        {tab}
+      </button>
+    ))}
+    {/* Botones especiales */}
+    <button
+      onClick={() => {
+        setActiveTab("under-construction");
+        scrollToSection("under-construction");
+      }}
+      style={{
+        fontSize: '1rem',
+        fontWeight: '600',
+        color: '#0056b3',
+        backgroundColor: '#f0f9ff',
+        border: '1px solid #bae6fd',
+        borderRadius: '0.5rem',
+        padding: '0.5rem 0.875rem',
+        cursor: 'pointer'
+      }}
+    >
+      Cotizador
+    </button>
+    <button
+      onClick={() => {
+        setActiveTab("under-construction");
+        scrollToSection("under-construction");
+      }}
+      style={{
+        fontSize: '1rem',
+        fontWeight: '600',
+        color: '#0056b3',
+        backgroundColor: '#fef3c7',
+        border: '1px solid #f59e0b',
+        borderRadius: '0.5rem',
+        padding: '0.5rem 0.875rem',
+        cursor: 'pointer'
+      }}
+    >
+      Acceso a Clientes
+    </button>
+  </div>
+</nav>
 
-<button
-  onClick={() => {
-    setActiveTab("under-construction");
-    scrollToSection("under-construction");
-  }}
-  style={{
-    fontSize: '1rem',
-    fontWeight: '600',
-    color: '#0056b3',
-    backgroundColor: '#fef3c7',
-    border: '1px solid #f59e0b',
-    borderRadius: '0.5rem',
-    padding: '0.5rem 0.875rem',
-    cursor: 'pointer',
-    transition: 'all 0.3s ease',
-    whiteSpace: 'nowrap'
-  }}
->
-  Acceso a Clientes
-</button>
-            </nav>
+{/* Menú desplegable (móvil) */}
+{menuOpen && window.innerWidth <= 768 && (
+  <div style={{
+    position: 'fixed',
+    top: '72px',
+    left: '0',
+    width: '100%',
+    backgroundColor: 'white',
+    zIndex: 999,
+    padding: '1rem 0',
+    boxShadow: '0 4px 10px rgba(0,0,0,0.1)',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center'
+  }}>
+    {["Inicio", "Valores", "Servicios", "Aseguradoras", "Nosotros", "Contacto"].map((tab) => (
+      <button
+        key={tab}
+        onClick={() => {
+          scrollToSection(tab.toLowerCase());
+          setMenuOpen(false);
+        }}
+        style={{
+          width: '90%',
+          padding: '1rem',
+          textAlign: 'left',
+          border: '1px solid #e5e7eb',
+          borderRadius: '0.5rem',
+          marginBottom: '0.5rem',
+          backgroundColor: activeTab === tab.toLowerCase() ? '#e0f2fe' : 'white',
+          color: activeTab === tab.toLowerCase() ? '#0056b3' : '#1f2937',
+          fontWeight: '500',
+          cursor: 'pointer'
+        }}
+      >
+        {tab}
+      </button>
+    ))}
+    <button
+      onClick={() => {
+        setActiveTab("under-construction");
+        scrollToSection("under-construction");
+        setMenuOpen(false);
+      }}
+      style={{
+        width: '90%',
+        padding: '1rem',
+        textAlign: 'left',
+        backgroundColor: '#f0f9ff',
+        border: '1px solid #bae6fd',
+        borderRadius: '0.5rem',
+        marginBottom: '0.5rem',
+        color: '#0056b3',
+        fontWeight: '600',
+        cursor: 'pointer'
+      }}
+    >
+      Cotizador
+    </button>
+    <button
+      onClick={() => {
+        setActiveTab("under-construction");
+        scrollToSection("under-construction");
+        setMenuOpen(false);
+      }}
+      style={{
+        width: '90%',
+        padding: '1rem',
+        textAlign: 'left',
+        backgroundColor: '#fef3c7',
+        border: '1px solid #f59e0b',
+        borderRadius: '0.5rem',
+        color: '#0056b3',
+        fontWeight: '600',
+        cursor: 'pointer'
+      }}
+    >
+      Acceso a Clientes
+    </button>
+  </div>
+)}
           </div>
         </header>
 
@@ -587,49 +685,47 @@ const App = () => {
           </div>
         </section>
 
-{/* Under Construction Section */}
-<section id="under-construction" style={{ display: activeTab === "under-construction" ? "block" : "none" }}>
-  <div style={{
-    minHeight: '100vh',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#f9fafb',
-    padding: '2rem',
-    textAlign: 'center'
-  }}>
-    <div style={{
-      maxWidth: '600px',
-      padding: '2rem',
-      backgroundColor: 'white',
-      borderRadius: '1rem',
-      boxShadow: '0 10px 30px rgba(0,0,0,0.05)',
-      border: '1px solid #e5e7eb'
-    }}>
-      <div style={{ fontSize: '4rem', marginBottom: '1.5rem' }}>🚧</div>
-      <h1 style={{ fontSize: '2.25rem', fontWeight: '700', color: '#1f2937', marginBottom: '1rem' }}>
-        En construcción
-      </h1>
-      <p style={{ fontSize: '1.125rem', color: '#4b5563', marginBottom: '2rem' }}>
-        Estamos desarrollando el Cotizador interactivo y el Portal de Clientes. Pronto estarán disponibles.
-      </p>
-      <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-        <span style={{ background: '#e0f2fe', color: '#0056b3', padding: '0.5rem 1rem', borderRadius: '9999px', fontSize: '0.875rem' }}>
-          📅 Lanzamiento estimado: Q2 2026
-        </span>
-        <span style={{ background: '#fef3c7', color: '#92400e', padding: '0.5rem 1rem', borderRadius: '9999px', fontSize: '0.875rem' }}>
-          📞 ¿Necesitas cotización urgente?  
-          <a href="tel:+525555555555" style={{ color: '#92400e', fontWeight: 'bold' }}>Llámanos</a>
-        </span>
-      </div>
-      <p style={{ marginTop: '2rem', color: '#6b7280', fontStyle: 'italic' }}>
-        Gracias por confiar en BASYC — tu seguridad es nuestra prioridad.
-      </p>
-    </div>
-  </div>
-</section>
-
+        {/* Under Construction Section */}
+        <section id="under-construction" style={{ display: activeTab === "under-construction" ? "block" : "none" }}>
+          <div style={{
+            minHeight: '100vh',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: '#f9fafb',
+            padding: '2rem',
+            textAlign: 'center'
+          }}>
+            <div style={{
+              maxWidth: '600px',
+              padding: '2rem',
+              backgroundColor: 'white',
+              borderRadius: '1rem',
+              boxShadow: '0 10px 30px rgba(0,0,0,0.05)',
+              border: '1px solid #e5e7eb'
+            }}>
+              <div style={{ fontSize: '4rem', marginBottom: '1.5rem' }}>🚧</div>
+              <h1 style={{ fontSize: '2.25rem', fontWeight: '700', color: '#1f2937', marginBottom: '1rem' }}>
+                En construcción
+              </h1>
+              <p style={{ fontSize: '1.125rem', color: '#4b5563', marginBottom: '2rem' }}>
+                Estamos desarrollando el Cotizador interactivo y el Portal de Clientes. Pronto estarán disponibles.
+              </p>
+              <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+                <span style={{ background: '#e0f2fe', color: '#0056b3', padding: '0.5rem 1rem', borderRadius: '9999px', fontSize: '0.875rem' }}>
+                  📅 Lanzamiento estimado: Q2 2026
+                </span>
+                <span style={{ background: '#fef3c7', color: '#92400e', padding: '0.5rem 1rem', borderRadius: '9999px', fontSize: '0.875rem' }}>
+                  📞 ¿Necesitas cotización urgente? <a href="tel:+525555555555" style={{ color: '#92400e', fontWeight: 'bold' }}>Llámanos</a>
+                </span>
+              </div>
+              <p style={{ marginTop: '2rem', color: '#6b7280', fontStyle: 'italic' }}>
+                Gracias por confiar en BASYC — tu seguridad es nuestra prioridad.
+              </p>
+            </div>
+          </div>
+        </section>
 
         {/* Nosotros */}
         <section id="nosotros" style={{
@@ -806,7 +902,7 @@ const App = () => {
                       marginRight: '1rem'
                     }}>
                       <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67-.001-.198.15-.794.966-.966 1.164-.173.199-.347.223-.62.124-.272-.1-.966-.356-1.828-.966-.653-.472-1.089-1.001-1.458-1.58-.361-.567-.176-1.066.025-1.515.188-.42.399-.9-.1-.9-.486-.001-.83.459-1.038.65-.207.19-.793.965-1.164 1.164-.173.199-.347.248-.571.124-.226-.124-1.04-1.248-1.41-2.373-.362-1.11-.15-2.038.025-2.864.175-.81.87-2.115 1.258-2.865.396-.764.787-1.227 1.177-1.828.381-.588.851-.43 1.362-.37.508.06 1.588.399 3.091 1.227 1.5.81 2.486 2.486 2.661 2.661.175.175.025.45-.1.65-.126.199-.5.374-.966.624-.463.25-.966.499-1.091.748-.126.25-.001.499.175.748s.424.523.773.872c.35.348.773.722.972.995.199.274.374.199.723.025.35-.175.995-.924 1.17-1.099.173-.174.372-.099.621.025.25.124 1.174.923 1.423.1172.25.25.499.374.674.573.175.199.274.348.399.523.126.175.051.324-.025.499-.075.175-.67 1.573-1.04 2.096-.374.524-.698.449-.947.449z"/>
+                        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67-.001-.198.15-.794.966-.966 1.164-.173.199-.347.223-.62.124-.272-.1-.966-.356-1.828-.966-.653-.472-1.089-1.001-1.458-1.58-.361-.567-.176-1.066.025-1.515.188-.42.399-.9-.1-.9-.486-.001-.83.459-1.038.65-.207.19-.793.965-1.164 1.164-.173.199-.347.248-.571.124-.226-.124-1.04-1.248-1.41-2.373-.362-1.11-.15-2.038.025-2.864.175-.81.87-2.115 1.258-2.865.396-.764.787-1.227 1.177-1.828.381-.588.851-.43 1.362-.37.508.06 1.588.399 3.091 1.227 1.5.81 2.486 2.486 2.661 2.661.175.175.025.45-.1.65-.126.199-.5.374-.966.624-.463.25-.966.499-1.091.748-.126.25-.001.499.175.748s.424.523.773.872c.35.348.773.722.972.995.199.274.374.199.723.025.35-.175.995-.924 1.17-1.099.173-.174.372-.099.621.025.25.124 1.174.923 1.423.1172.25.25.499.374.674.573.175.199.274.348.399.523.126.175.051.324-.025.499-.7 1.573-1.04 2.096-.374.524-.698.449-.947.449z"/>
                       </svg>
                     </div>
                     <div>
@@ -857,7 +953,7 @@ const App = () => {
                     </div>
                     <div>
                       <p style={{ fontWeight: '600', marginBottom: '0.25rem' }}>Dirección</p>
-                      <p>Jaime Balmes, Col. Polanco<br />Ciudad de México, C.P. 11520</p>
+                      <p>Jaime Balmes, Col. Polanco<br/>Ciudad de México, C.P. 11520</p>
                     </div>
                   </div>
                   <div style={{
@@ -880,7 +976,7 @@ const App = () => {
                     </div>
                     <div>
                       <p style={{ fontWeight: '600', marginBottom: '0.25rem' }}>Horario</p>
-                      <p>Lunes a Viernes: 9:00 - 18:00<br />Sábado: 10:00 - 14:00</p>
+                      <p>Lunes a Viernes: 9:00 - 18:00<br/>Sábado: 10:00 - 14:00</p>
                     </div>
                   </div>
                 </div>
@@ -969,43 +1065,41 @@ const App = () => {
           </div>
         </footer>
 
-
         {/* Botón flotante con tu logo personalizado */}
         <button
-  onClick={() => {
-    if (window.Tawk_API && typeof window.Tawk_API.toggle === 'function') {
-      window.Tawk_API.toggle();
-    }
-  }}
-  style={{
-    position: 'fixed',
-    bottom: '2rem',
-    right: '2rem',
-    width: '72px',     // 👈 Aumentado de 60px a 72px
-    height: '72px',    // 👈 Aumentado
-    borderRadius: '50%',
-    backgroundColor: '#0056b3',
-    border: 'none',
-    cursor: 'pointer',
-    boxShadow: '0 6px 20px rgba(0, 86, 179, 0.5)',
-    zIndex: 1000,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    transition: 'all 0.3s ease'
-  }}
->
-  <img
-    src="/assets/brand/basyc-logo.jpg"
-    alt="Asistente BASYC"
-    style={{
-      width: '120px',   // 👈 Más grande
-      height: '120px',
-      objectFit: 'contain'
-    }}
-  />
-</button>
-
+          onClick={() => {
+            if (window.Tawk_API && typeof window.Tawk_API.toggle === 'function') {
+              window.Tawk_API.toggle();
+            }
+          }}
+          title="Habla con nuestro asistente virtual"
+          style={{
+            position: 'fixed',
+            bottom: '2rem',
+            right: '2rem',
+            width: '72px',
+            height: '72px',
+            borderRadius: '50%',
+            backgroundColor: '#0056b3',
+            border: 'none',
+            cursor: 'pointer',
+            boxShadow: '0 6px 20px rgba(0, 86, 179, 0.5)',
+            zIndex: 1000,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}
+        >
+          <img
+            src="/assets/brand/basyc-logo.jpg"
+            alt="Asistente Virtual BASYC"
+            style={{
+              width: '200px',
+              height: '200px',
+              objectFit: 'contain'
+            }}
+          />
+        </button>
       </div>
     </>
   );
