@@ -31,7 +31,7 @@ const App = () => {
   useEffect(() => {
     // Configuración de Tawk.to
     const Tawk_ID = 'YOUR_TAWK_ID'; // Reemplaza con tu ID real
-    const Tawk_API_KEY = 'YOUR_API_KEY'; // Reemplaza con tu API key real
+    // const Tawk_API_KEY = 'YOUR_API_KEY'; // Reemplaza con tu API key real
     
     var s1 = document.createElement("script");
     s1.async = true;
