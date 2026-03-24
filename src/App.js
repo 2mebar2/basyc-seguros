@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 const App = () => {
   const [activeTab, setActiveTab] = useState("inicio");
   const [menuOpen, setMenuOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const [selectedAseguradora, setSelectedAseguradora] = useState(null);
   const [formData, setFormData] = useState({
     nombre: "",
@@ -10,48 +11,120 @@ const App = () => {
     telefono: "",
     mensaje: ""
   });
+  
+  const menuRef = useRef(null);
+  const buttonRef = useRef(null);
+
+  // Detectar tamaño de pantalla
+  useEffect(() => {
+    const checkScreenSize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    
+    checkScreenSize();
+    window.addEventListener('resize', checkScreenSize);
+    
+    return () => window.removeEventListener('resize', checkScreenSize);
+  }, []);
+
+  // Cargar Tawk.to script
+  useEffect(() => {
+    // Configuración de Tawk.to
+    const Tawk_ID = 'YOUR_TAWK_ID'; // Reemplaza con tu ID real
+    const Tawk_API_KEY = 'YOUR_API_KEY'; // Reemplaza con tu API key real
+    
+    var s1 = document.createElement("script");
+    s1.async = true;
+    s1.src = `https://embed.tawk.to/${Tawk_ID}/default`;
+    s1.charset = 'UTF-8';
+    s1.setAttribute('crossorigin', '*');
+    
+    var s0 = document.getElementsByTagName("script")[0];
+    s0.parentNode.insertBefore(s1, s0);
+    
+    return () => {
+      const script = document.querySelector('script[src*="tawk.to"]');
+      if (script) script.remove();
+    };
+  }, []);
+
+  // Cerrar menú al hacer clic fuera
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (menuOpen && 
+          menuRef.current && 
+          !menuRef.current.contains(event.target) &&
+          buttonRef.current &&
+          !buttonRef.current.contains(event.target)) {
+        setMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [menuOpen]);
+
+  // Bloquear scroll cuando el menú está abierto en móvil
+  useEffect(() => {
+    if (menuOpen && isMobile) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [menuOpen, isMobile]);
 
   // --- Servicios ---
   const servicios = [
     {
+      id: 1,
       titulo: "Seguro de Daños Empresariales",
-      icono: "🏢",
+      icono: "/assets/brand/servicios-empresariales.png",
       descripcion: "Protegemos tus activos empresariales con propuestas competitivas que respaldan tu operación. Cobertura completa para inmuebles, maquinaria, equipo y mercancías contra incendio, inundación, robo y fenómenos naturales.",
       valor: "seguridad"
     },
     {
+      id: 2,
       titulo: "Seguro de Automóvil",
-      icono: "🚗",
+      icono: "/assets/brand/servicios-autos.png",
       descripcion: "Protección completa para tu vehículo contra accidentes, robo y daños. Incluye asistencia vial 24/7, cobertura de daños materiales y responsabilidad civil.",
       valor: "seguridad"
     },
     {
+      id: 3,
       titulo: "Seguro de Vida",
-      icono: "❤️",
+      icono: "/assets/brand/servicios-vida.png",
       descripcion: "Protege a tu familia con un respaldo económico en caso de fallecimiento. Incluye cobertura por enfermedad, accidente y opciones de ahorro.",
       valor: "armonia"
     },
     {
+      id: 4,
       titulo: "Seguro de Salud",
-      icono: "🏥",
+      icono: "/assets/brand/servicios-salud.png",
       descripcion: "Acceso a la mejor red médica con cobertura de hospitalización, consultas, medicamentos y cirugías. Tranquilidad para tu bienestar.",
       valor: "confianza"
     },
     {
+      id: 5,
       titulo: "Seguro de Hogar",
-      icono: "🏠",
+      icono: "/assets/brand/servicios-hogar.png",
       descripcion: "Protege tu patrimonio contra incendios, inundaciones, robo y daños estructurales. Incluye responsabilidad civil y asistencia en el hogar.",
       valor: "paz"
     },
     {
+      id: 6,
       titulo: "Seguro de Viaje",
-      icono: "✈️",
+      icono: "/assets/brand/servicios-viajes.png",
       descripcion: "Protección completa durante tus viajes internacionales o nacionales. Incluye cobertura médica, cancelación de viaje y pérdida de equipaje.",
       valor: "seguridad"
     },
     {
+      id: 7,
       titulo: "Fianzas",
-      icono: "💼",
+      icono: "/assets/brand/servicios-fianzas.png",
       descripcion: "Soluciones de garantía para contratos, licitaciones y obligaciones fiscales. Aumenta tu competitividad en procesos comerciales.",
       valor: "confianza"
     }
@@ -138,6 +211,7 @@ const App = () => {
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
     }
+    setMenuOpen(false);
   };
 
   const getValorColor = (valor) => {
@@ -151,15 +225,40 @@ const App = () => {
   };
 
   const openWhatsApp = () => {
-    const whatsappMessage = `Hola, mi nombre es ${formData.nombre}. Me gustaría obtener información sobre seguros. Mi teléfono es ${formData.telefono} y mi correo es ${formData.email}. Mensaje: ${formData.mensaje}`;
+    const whatsappMessage = `Hola, me gustaría obtener información sobre seguros.`;
     window.open(`https://wa.me/527224447736?text=${encodeURIComponent(whatsappMessage)}`, '_blank');
   };
+
+  const openTawk = () => {
+    // Abrir o toggle Tawk.to widget
+    if (window.Tawk_API && typeof window.Tawk_API.toggle === 'function') {
+      window.Tawk_API.toggle();
+    } else if (window.Tawk_API && typeof window.Tawk_API.showWidget === 'function') {
+      window.Tawk_API.showWidget();
+    }
+  };
+
+  // Elementos del menú
+  const menuItems = [
+    { id: "inicio", label: "Inicio" },
+    { id: "valores", label: "Valores" },
+    { id: "servicios", label: "Servicios" },
+    { id: "aseguradoras", label: "Aseguradoras" },
+    { id: "nosotros", label: "Nosotros" },
+    { id: "contacto", label: "Contacto" }
+  ];
 
   return (
     <>
       {/* === ESTILOS GLOBALES === */}
       <style>
         {`
+          * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+          }
+
           body {
             margin: 0;
             padding: 0;
@@ -185,6 +284,75 @@ const App = () => {
             0%, 100% { transform: translateY(0); }
             50% { transform: translateY(-10px); }
           }
+
+          @keyframes slideIn {
+            from {
+              transform: translateX(100%);
+              opacity: 0;
+            }
+            to {
+              transform: translateX(0);
+              opacity: 1;
+            }
+          }
+
+          @keyframes fadeIn {
+            from {
+              opacity: 0;
+            }
+            to {
+              opacity: 1;
+            }
+          }
+
+          @keyframes pulse {
+            0% {
+              transform: scale(1);
+              box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
+            }
+            50% {
+              transform: scale(1.1);
+              box-shadow: 0 6px 20px rgba(37, 211, 102, 0.5);
+            }
+            100% {
+              transform: scale(1);
+              box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
+            }
+          }
+
+          .menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            animation: fadeIn 0.3s ease;
+          }
+
+          .mobile-menu {
+            position: fixed;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            width: 280px;
+            background-color: white;
+            box-shadow: -2px 0 8px rgba(0, 0, 0, 0.15);
+            z-index: 1000;
+            animation: slideIn 0.3s ease;
+            overflow-y: auto;
+          }
+
+          /* Animación de latido SOLO para WhatsApp */
+          .pulse-tawk {
+            animation: pulse 2s infinite;
+          }
+
+          .pulse-tawk:hover {
+            animation: none;
+            transform: scale(1.1);
+          }
         `}
       </style>
 
@@ -204,7 +372,8 @@ const App = () => {
             padding: '0.75rem 1.5rem',
             display: 'flex',
             justifyContent: 'space-between',
-            alignItems: 'center'
+            alignItems: 'center',
+            position: 'relative'
           }}>
             {/* Logo BASYC */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
@@ -212,20 +381,20 @@ const App = () => {
                 src={require("./assets/brand/basyc-logo.png")}
                 alt="BASYC Seguros & Fianzas"
                 style={{
-                  height: '144px',
-                  maxWidth: '220px',
+                  height: '140px',
+                  maxWidth: '160px',
                   objectFit: 'contain'
                 }}
               />
               <div>
                 <h1 style={{
-                  fontSize: '1.75rem',
+                  fontSize: '1.5rem',
                   fontWeight: '700',
                   color: '#1f2937',
                   margin: 0
                 }}>BASYC</h1>
                 <p style={{
-                  fontSize: '1rem',
+                  fontSize: '0.875rem',
                   color: '#6b7280',
                   margin: '0.25rem 0 0',
                   fontWeight: '500'
@@ -233,176 +402,197 @@ const App = () => {
               </div>
             </div>
 
-{/* Menú */}
-<nav style={{
-  display: 'flex',
-  gap: '1rem',
-  alignItems: 'center'
-}}>
-  {/* Botón hamburguesa (solo visible en móvil) */}
-  <div style={{
-    display: window.innerWidth > 768 ? 'none' : 'block',
-    marginLeft: 'auto'
-  }}>
-    <button
-      onClick={() => setMenuOpen(!menuOpen)}
-      style={{
-        fontSize: '1.5rem',
-        backgroundColor: 'transparent',
-        border: 'none',
-        color: '#0056b3',
-        cursor: 'pointer'
-      }}
-    >
-      ☰
-    </button>
-  </div>
+            {/* Menú Desktop */}
+            {!isMobile && (
+              <nav style={{
+                display: 'flex',
+                gap: '0.75rem',
+                alignItems: 'center',
+                flexWrap: 'wrap'
+              }}>
+                {menuItems.map((item) => (
+                  <button
+                    key={item.id}
+                    onClick={() => scrollToSection(item.id)}
+                    style={{
+                      fontSize: '0.875rem',
+                      fontWeight: '500',
+                      color: activeTab === item.id ? '#0056b3' : '#4b5563',
+                      backgroundColor: activeTab === item.id ? '#e0f2fe' : 'transparent',
+                      border: '1px solid #e5e7eb',
+                      borderRadius: '0.5rem',
+                      padding: '0.5rem 0.875rem',
+                      cursor: 'pointer',
+                      transition: 'all 0.3s ease',
+                      whiteSpace: 'nowrap'
+                    }}
+                  >
+                    {item.label}
+                  </button>
+                ))}
 
-  {/* Menú horizontal (solo escritorio) */}
-  <div style={{ display: window.innerWidth <= 768 ? 'none' : 'flex', gap: '1rem' }}>
-    {["Inicio", "Valores", "Servicios", "Aseguradoras", "Nosotros", "Contacto"].map((tab) => (
-      <button
-        key={tab}
-        onClick={() => scrollToSection(tab.toLowerCase())}
-        style={{
-          fontSize: '1rem',
-          fontWeight: '500',
-          color: activeTab === tab.toLowerCase() ? '#0056b3' : '#4b5563',
-          backgroundColor: activeTab === tab.toLowerCase() ? '#e0f2fe' : 'transparent',
-          border: '1px solid #e5e7eb',
-          borderRadius: '0.5rem',
-          padding: '0.5rem 0.875rem',
-          cursor: 'pointer',
-          transition: 'all 0.3s ease',
-          whiteSpace: 'nowrap'
-        }}
-      >
-        {tab}
-      </button>
-    ))}
-    {/* Botones especiales */}
-    <button
-      onClick={() => {
-        setActiveTab("under-construction");
-        scrollToSection("under-construction");
-      }}
-      style={{
-        fontSize: '1rem',
-        fontWeight: '600',
-        color: '#0056b3',
-        backgroundColor: '#f0f9ff',
-        border: '1px solid #bae6fd',
-        borderRadius: '0.5rem',
-        padding: '0.5rem 0.875rem',
-        cursor: 'pointer'
-      }}
-    >
-      Cotizador
-    </button>
-    <button
-      onClick={() => {
-        setActiveTab("under-construction");
-        scrollToSection("under-construction");
-      }}
-      style={{
-        fontSize: '1rem',
-        fontWeight: '600',
-        color: '#0056b3',
-        backgroundColor: '#fef3c7',
-        border: '1px solid #f59e0b',
-        borderRadius: '0.5rem',
-        padding: '0.5rem 0.875rem',
-        cursor: 'pointer'
-      }}
-    >
-      Acceso a Clientes
-    </button>
-  </div>
-</nav>
+                <button
+                  onClick={() => scrollToSection("under-construction")}
+                  style={{
+                    fontSize: '0.875rem',
+                    fontWeight: '600',
+                    color: '#0056b3',
+                    backgroundColor: '#f0f9ff',
+                    border: '1px solid #bae6fd',
+                    borderRadius: '0.5rem',
+                    padding: '0.5rem 0.875rem',
+                    cursor: 'pointer'
+                  }}
+                >
+                  Cotizador
+                </button>
 
-{/* Menú desplegable (móvil) */}
-{menuOpen && window.innerWidth <= 768 && (
-  <div style={{
-    position: 'fixed',
-    top: '72px',
-    left: '0',
-    width: '100%',
-    backgroundColor: 'white',
-    zIndex: 999,
-    padding: '1rem 0',
-    boxShadow: '0 4px 10px rgba(0,0,0,0.1)',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center'
-  }}>
-    {["Inicio", "Valores", "Servicios", "Aseguradoras", "Nosotros", "Contacto"].map((tab) => (
-      <button
-        key={tab}
-        onClick={() => {
-          scrollToSection(tab.toLowerCase());
-          setMenuOpen(false);
-        }}
-        style={{
-          width: '90%',
-          padding: '1rem',
-          textAlign: 'left',
-          border: '1px solid #e5e7eb',
-          borderRadius: '0.5rem',
-          marginBottom: '0.5rem',
-          backgroundColor: activeTab === tab.toLowerCase() ? '#e0f2fe' : 'white',
-          color: activeTab === tab.toLowerCase() ? '#0056b3' : '#1f2937',
-          fontWeight: '500',
-          cursor: 'pointer'
-        }}
-      >
-        {tab}
-      </button>
-    ))}
-    <button
-      onClick={() => {
-        setActiveTab("under-construction");
-        scrollToSection("under-construction");
-        setMenuOpen(false);
-      }}
-      style={{
-        width: '90%',
-        padding: '1rem',
-        textAlign: 'left',
-        backgroundColor: '#f0f9ff',
-        border: '1px solid #bae6fd',
-        borderRadius: '0.5rem',
-        marginBottom: '0.5rem',
-        color: '#0056b3',
-        fontWeight: '600',
-        cursor: 'pointer'
-      }}
-    >
-      Cotizador
-    </button>
-    <button
-      onClick={() => {
-        setActiveTab("under-construction");
-        scrollToSection("under-construction");
-        setMenuOpen(false);
-      }}
-      style={{
-        width: '90%',
-        padding: '1rem',
-        textAlign: 'left',
-        backgroundColor: '#fef3c7',
-        border: '1px solid #f59e0b',
-        borderRadius: '0.5rem',
-        color: '#0056b3',
-        fontWeight: '600',
-        cursor: 'pointer'
-      }}
-    >
-      Acceso a Clientes
-    </button>
-  </div>
-)}
+                <button
+                  onClick={() => scrollToSection("under-construction")}
+                  style={{
+                    fontSize: '0.875rem',
+                    fontWeight: '600',
+                    color: '#0056b3',
+                    backgroundColor: '#fef3c7',
+                    border: '1px solid #f59e0b',
+                    borderRadius: '0.5rem',
+                    padding: '0.5rem 0.875rem',
+                    cursor: 'pointer'
+                  }}
+                >
+                  Acceso a Clientes
+                </button>
+              </nav>
+            )}
+
+            {/* Botón Hamburguesa (solo móvil) */}
+            {isMobile && (
+              <button
+                ref={buttonRef}
+                onClick={() => setMenuOpen(!menuOpen)}
+                style={{
+                  fontSize: '1.75rem',
+                  backgroundColor: 'transparent',
+                  border: 'none',
+                  color: '#0056b3',
+                  cursor: 'pointer',
+                  padding: '0.5rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  zIndex: 1001,
+                  position: 'relative'
+                }}
+                aria-label="Menú"
+              >
+                {menuOpen ? '✕' : '☰'}
+              </button>
+            )}
           </div>
         </header>
+
+        {/* Overlay y Menú Móvil */}
+        {isMobile && menuOpen && (
+          <>
+            <div className="menu-overlay" onClick={() => setMenuOpen(false)} />
+            <div className="mobile-menu" ref={menuRef}>
+              <div style={{
+                padding: '1.5rem',
+                backgroundColor: '#f8fafc',
+                borderBottom: '1px solid #e2e8f0'
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                  <img
+                    src={require("./assets/brand/basyc-logo.png")}
+                    alt="BASYC"
+                    style={{ height: '50px', width: '50px', objectFit: 'contain' }}
+                  />
+                  <div>
+                    <h3 style={{ fontSize: '1.25rem', fontWeight: 'bold', color: '#1f2937' }}>BASYC</h3>
+                    <p style={{ fontSize: '0.75rem', color: '#6b7280' }}>Seguros & Fianzas</p>
+                  </div>
+                </div>
+              </div>
+              
+              <nav style={{
+                display: 'flex',
+                flexDirection: 'column',
+                padding: '1rem 0'
+              }}>
+                {menuItems.map((item) => (
+                  <button
+                    key={item.id}
+                    onClick={() => scrollToSection(item.id)}
+                    style={{
+                      fontSize: '1rem',
+                      fontWeight: activeTab === item.id ? '600' : '500',
+                      color: activeTab === item.id ? '#0056b3' : '#4b5563',
+                      backgroundColor: activeTab === item.id ? '#e0f2fe' : 'transparent',
+                      border: 'none',
+                      padding: '1rem 1.5rem',
+                      cursor: 'pointer',
+                      textAlign: 'left',
+                      transition: 'all 0.2s ease',
+                      width: '100%'
+                    }}
+                  >
+                    {item.label}
+                  </button>
+                ))}
+                
+                <div style={{
+                  borderTop: '1px solid #e5e7eb',
+                  margin: '0.5rem 1rem'
+                }} />
+                
+                <button
+                  onClick={() => scrollToSection("under-construction")}
+                  style={{
+                    fontSize: '1rem',
+                    fontWeight: '600',
+                    color: '#0056b3',
+                    backgroundColor: '#f0f9ff',
+                    border: 'none',
+                    padding: '1rem 1.5rem',
+                    cursor: 'pointer',
+                    textAlign: 'left',
+                    width: '100%'
+                  }}
+                >
+                  🚧 Cotizador
+                </button>
+                
+                <button
+                  onClick={() => scrollToSection("under-construction")}
+                  style={{
+                    fontSize: '1rem',
+                    fontWeight: '600',
+                    color: '#0056b3',
+                    backgroundColor: '#fef3c7',
+                    border: 'none',
+                    padding: '1rem 1.5rem',
+                    cursor: 'pointer',
+                    textAlign: 'left',
+                    width: '100%'
+                  }}
+                >
+                  🔐 Acceso a Clientes
+                </button>
+              </nav>
+              
+              <div style={{
+                padding: '1.5rem',
+                borderTop: '1px solid #e5e7eb',
+                backgroundColor: '#f9fafb',
+                marginTop: 'auto'
+              }}>
+                <p style={{ fontSize: '0.75rem', color: '#6b7280', textAlign: 'center' }}>
+                  © 2024 BASYC Seguros & Fianzas
+                </p>
+              </div>
+            </div>
+          </>
+        )}
 
         {/* Hero */}
         <section id="inicio" style={{
@@ -444,7 +634,7 @@ const App = () => {
                   color: 'white',
                   padding: '0.75rem 2rem',
                   borderRadius: '0.5rem',
-                  fontWeight: 'semibold',
+                  fontWeight: '600',
                   border: 'none',
                   cursor: 'pointer'
                 }}
@@ -458,7 +648,7 @@ const App = () => {
                   color: '#0056b3',
                   padding: '0.75rem 2rem',
                   borderRadius: '0.5rem',
-                  fontWeight: 'semibold',
+                  fontWeight: '600',
                   backgroundColor: 'transparent',
                   cursor: 'pointer'
                 }}
@@ -538,11 +728,22 @@ const App = () => {
                     alignItems: 'center',
                     justifyContent: 'center'
                   }}>
-                    <span style={{ fontSize: '4rem' }}>{s.icono}</span>
+                    {typeof s.icono === 'string' && (s.icono.endsWith('.png') || s.icono.endsWith('.jpg')) ? (
+                      <img
+                        src={s.icono}
+                        alt={s.titulo}
+                        style={{
+                          width: '230px',
+                          height: '230px',
+                          objectFit: 'contain'
+                        }}
+                      />
+                    ) : (
+                      <span style={{ fontSize: '4rem' }}>{s.icono}</span>
+                    )}
                   </div>
                   <div style={{ padding: '1.5rem' }}>
                     <div style={{ display: 'flex', alignItems: 'center', marginBottom: '1rem' }}>
-                      <span style={{ fontSize: '1.5rem', marginRight: '0.75rem' }}>{s.icono}</span>
                       <div style={{
                         backgroundColor: getValorColor(s.valor),
                         color: 'white',
@@ -577,7 +778,6 @@ const App = () => {
               </p>
             </div>
 
-            {/* Marquee de logos */}
             <div style={{
               backgroundColor: '#f3f4f6',
               borderRadius: '0.5rem',
@@ -612,7 +812,6 @@ const App = () => {
                     />
                   </div>
                 ))}
-                {/* Duplicado para bucle infinito */}
                 {aseguradoras.map((a) => (
                   <div
                     key={`copy-${a.id}`}
@@ -750,12 +949,7 @@ const App = () => {
               maxWidth: '600px',
               margin: '0 auto'
             }}>
-              {[
-                { valor: "15+", texto: "Años de experiencia" },
-                { valor: "5000+", texto: "Clientes satisfechos" },
-                { valor: "8", texto: "Aseguradoras asociadas" },
-                { valor: "100%", texto: "Satisfacción garantizada" }
-              ].map((item, i) => (
+              {[{ valor: "15+", texto: "Años de experiencia" }, { valor: "5000+", texto: "Clientes satisfechos" }, { valor: "8", texto: "Aseguradoras asociadas" }, { valor: "100%", texto: "Satisfacción garantizada" }].map((item, i) => (
                 <div key={i} style={{
                   backgroundColor: 'white',
                   borderRadius: '0.5rem',
@@ -785,7 +979,7 @@ const App = () => {
                   color: 'white',
                   padding: '0.75rem 2rem',
                   borderRadius: '0.5rem',
-                  fontWeight: 'semibold',
+                  fontWeight: '600',
                   border: 'none',
                   cursor: 'pointer'
                 }}
@@ -1065,38 +1259,84 @@ const App = () => {
           </div>
         </footer>
 
-        {/* Botón flotante con tu logo personalizado */}
+        {/* Botones Flotantes */}
+        
+        {/* Botón WhatsApp - CON EFECTO DE LATIDO (Izquierda) */}
         <button
-          onClick={() => {
-            if (window.Tawk_API && typeof window.Tawk_API.toggle === 'function') {
-              window.Tawk_API.toggle();
-            }
+          onClick={openWhatsApp}
+          title="Contáctanos por WhatsApp"
+          className="pulse-whatsapp"
+          style={{
+            position: 'fixed',
+            bottom: '2rem',
+            left: '2rem',
+            width: '60px',
+            height: '60px',
+            borderRadius: '50%',
+            backgroundColor: '#25D366',
+            border: 'none',
+            cursor: 'pointer',
+            boxShadow: '0 4px 15px rgba(37, 211, 102, 0.4)',
+            zIndex: 1000,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            transition: 'transform 0.3s'
           }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.transform = 'scale(1.1)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.transform = 'scale(1)';
+          }}
+        >
+          <svg width="32" height="32" fill="white" viewBox="0 0 24 24">
+            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67-.001-.198.15-.794.966-.966 1.164-.173.199-.347.223-.62.124-.272-.1-.966-.356-1.828-.966-.653-.472-1.089-1.001-1.458-1.58-.361-.567-.176-1.066.025-1.515.188-.42.399-.9-.1-.9-.486-.001-.83.459-1.038.65-.207.19-.793.965-1.164 1.164-.173.199-.347.248-.571.124-.226-.124-1.04-1.248-1.41-2.373-.362-1.11-.15-2.038.025-2.864.175-.81.87-2.115 1.258-2.865.396-.764.787-1.227 1.177-1.828.381-.588.851-.43 1.362-.37.508.06 1.588.399 3.091 1.227 1.5.81 2.486 2.486 2.661 2.661.175.175.025.45-.1.65-.126.199-.5.374-.966.624-.463.25-.966.499-1.091.748-.126.25-.001.499.175.748s.424.523.773.872c.35.348.773.722.972.995.199.274.374.199.723.025.35-.175.995-.924 1.17-1.099.173-.174.372-.099.621.025.25.124 1.174.923 1.423.1172.25.25.499.374.674.573.175.199.274.348.399.523.126.175.051.324-.025.499-.7 1.573-1.04 2.096-.374.524-.698.449-.947.449z"/>
+          </svg>
+        </button>
+
+        {/* Botón Tawk.to - Asistente Virtual (Derecha) - SIN LATIDO */}
+        <button
+          onClick={openTawk}
           title="Habla con nuestro asistente virtual"
           style={{
             position: 'fixed',
             bottom: '2rem',
             right: '2rem',
-            width: '72px',
-            height: '72px',
-            borderRadius: '50%',
+            width: '100px',
+            height: '100px',
+            borderRadius: '70%',
             backgroundColor: '#0056b3',
             border: 'none',
             cursor: 'pointer',
-            boxShadow: '0 6px 20px rgba(0, 86, 179, 0.5)',
+            boxShadow: '0 4px 15px rgba(0, 86, 179, 0.4)',
             zIndex: 1000,
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'center'
+            justifyContent: 'center',
+            transition: 'transform 0.3s, box-shadow 0.3s'
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.transform = 'scale(1.1)';
+            e.currentTarget.style.boxShadow = '0 6px 20px rgba(0, 86, 179, 0.5)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.transform = 'scale(1)';
+            e.currentTarget.style.boxShadow = '0 4px 15px rgba(0, 86, 179, 0.4)';
           }}
         >
           <img
             src="/assets/brand/basyc-logo.jpg"
             alt="Asistente Virtual BASYC"
             style={{
-              width: '200px',
-              height: '200px',
-              objectFit: 'contain'
+              width: '90px',
+              height: '90px',
+              borderRadius: '50%',
+              objectFit: 'cover'
+            }}
+            onError={(e) => {
+              e.target.style.display = 'none';
+              e.target.parentElement.innerHTML = '<span style="font-size: 2rem;">💬</span>';
             }}
           />
         </button>
