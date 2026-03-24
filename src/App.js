@@ -5,6 +5,7 @@ const App = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [selectedAseguradora, setSelectedAseguradora] = useState(null);
+  const [videoLoaded, setVideoLoaded] = useState(false);
   const [formData, setFormData] = useState({
     nombre: "",
     email: "",
@@ -29,9 +30,7 @@ const App = () => {
 
   // Cargar Tawk.to script
   useEffect(() => {
-    // Configuración de Tawk.to
     const Tawk_ID = 'YOUR_TAWK_ID'; // Reemplaza con tu ID real
-    // const Tawk_API_KEY = 'YOUR_API_KEY'; // Reemplaza con tu API key real
     
     var s1 = document.createElement("script");
     s1.async = true;
@@ -203,6 +202,13 @@ const App = () => {
     e.preventDefault();
     const whatsappMessage = `Hola, mi nombre es ${formData.nombre}. Me gustaría obtener información sobre seguros. Mi teléfono es ${formData.telefono} y mi correo es ${formData.email}. Mensaje: ${formData.mensaje}`;
     window.open(`https://wa.me/527224447736?text=${encodeURIComponent(whatsappMessage)}`, '_blank');
+    // Limpiar formulario después de enviar
+    setFormData({
+      nombre: "",
+      email: "",
+      telefono: "",
+      mensaje: ""
+    });
   };
 
   const scrollToSection = (sectionId) => {
@@ -230,7 +236,6 @@ const App = () => {
   };
 
   const openTawk = () => {
-    // Abrir o toggle Tawk.to widget
     if (window.Tawk_API && typeof window.Tawk_API.toggle === 'function') {
       window.Tawk_API.toggle();
     } else if (window.Tawk_API && typeof window.Tawk_API.showWidget === 'function') {
@@ -263,9 +268,8 @@ const App = () => {
             margin: 0;
             padding: 0;
             min-height: 100vh;
-            background: url('https://images.unsplash.com/photo-1450101499163-c8848c66ca85?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=30') center/cover no-repeat fixed;
-            background-color: #0056b3;
             font-family: system-ui, -apple-system, sans-serif;
+            background-color: #0056b3;
           }
 
           .page-content {
@@ -308,15 +312,15 @@ const App = () => {
           @keyframes pulse {
             0% {
               transform: scale(1);
-              box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
+              box-shadow: 0 4px 15px rgba(0, 86, 179, 0.3);
             }
             50% {
               transform: scale(1.1);
-              box-shadow: 0 6px 20px rgba(37, 211, 102, 0.5);
+              box-shadow: 0 6px 20px rgba(0, 86, 179, 0.5);
             }
             100% {
               transform: scale(1);
-              box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
+              box-shadow: 0 4px 15px rgba(0, 86, 179, 0.3);
             }
           }
 
@@ -344,7 +348,6 @@ const App = () => {
             overflow-y: auto;
           }
 
-          /* Animación de latido SOLO para WhatsApp */
           .pulse-tawk {
             animation: pulse 2s infinite;
           }
@@ -353,18 +356,69 @@ const App = () => {
             animation: none;
             transform: scale(1.1);
           }
+
+          .video-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            overflow: hidden;
+          }
+
+          .video-background video {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            object-fit: cover;
+            filter: brightness(0.85) contrast(1.005);
+            transition: opacity 1s ease-in-out;
+          }
+
+          .video-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(0,0,0,0.3) 0%, rgba(0,86,179,0.2) 50%, rgba(0,0,0,0.3) 100%);
+            z-index: -1;
+          }
         `}
       </style>
 
       {/* === CONTENIDO PRINCIPAL === */}
       <div className="page-content">
+        
+        {/* 🎬 VIDEO DE FONDO CON VISIBILIDAD OPTIMIZADA */}
+        <div className="video-background">
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            onCanPlayThrough={() => setVideoLoaded(true)}
+            style={{ opacity: videoLoaded ? 1 : 0 }}
+          >
+            <source src="/assets/brand/business.mp4" type="video/mp4" />
+          </video>
+          <div className="video-overlay" />
+        </div>
+
         {/* Header */}
         <header style={{
-          backgroundColor: 'white',
+          backgroundColor: 'rgba(255, 255, 255, 0.95)',
           boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
           position: 'sticky',
           top: 0,
-          zIndex: 50
+          zIndex: 50,
+          backdropFilter: 'blur(10px)'
         }}>
           <div style={{
             maxWidth: '1280px',
@@ -382,7 +436,7 @@ const App = () => {
                 alt="BASYC Seguros & Fianzas"
                 style={{
                   height: '140px',
-                  maxWidth: '160px',
+                  maxWidth: '180px',
                   objectFit: 'contain'
                 }}
               />
@@ -413,6 +467,7 @@ const App = () => {
                 {menuItems.map((item) => (
                   <button
                     key={item.id}
+                    type="button"
                     onClick={() => scrollToSection(item.id)}
                     style={{
                       fontSize: '0.875rem',
@@ -432,6 +487,7 @@ const App = () => {
                 ))}
 
                 <button
+                  type="button"
                   onClick={() => scrollToSection("under-construction")}
                   style={{
                     fontSize: '0.875rem',
@@ -448,6 +504,7 @@ const App = () => {
                 </button>
 
                 <button
+                  type="button"
                   onClick={() => scrollToSection("under-construction")}
                   style={{
                     fontSize: '0.875rem',
@@ -469,6 +526,7 @@ const App = () => {
             {isMobile && (
               <button
                 ref={buttonRef}
+                type="button"
                 onClick={() => setMenuOpen(!menuOpen)}
                 style={{
                   fontSize: '1.75rem',
@@ -522,6 +580,7 @@ const App = () => {
                 {menuItems.map((item) => (
                   <button
                     key={item.id}
+                    type="button"
                     onClick={() => scrollToSection(item.id)}
                     style={{
                       fontSize: '1rem',
@@ -546,6 +605,7 @@ const App = () => {
                 }} />
                 
                 <button
+                  type="button"
                   onClick={() => scrollToSection("under-construction")}
                   style={{
                     fontSize: '1rem',
@@ -563,6 +623,7 @@ const App = () => {
                 </button>
                 
                 <button
+                  type="button"
                   onClick={() => scrollToSection("under-construction")}
                   style={{
                     fontSize: '1rem',
@@ -599,18 +660,18 @@ const App = () => {
           minHeight: '100vh',
           display: 'flex',
           alignItems: 'center',
-          backgroundColor: 'rgba(255, 255, 255, 0.9)',
+          backgroundColor: 'rgba(255, 255, 255, 0.88)',
           color: '#1f2937',
           position: 'relative'
         }}>
           <div style={{
             maxWidth: '1280px',
             margin: '0 auto',
-            padding: '0 1.5rem',
+            padding: '4rem 1.5rem',
             textAlign: 'center'
           }}>
             <h1 style={{
-              fontSize: '2.5rem',
+              fontSize: '3rem',
               fontWeight: 'bold',
               marginBottom: '1.5rem',
               lineHeight: 1.2
@@ -618,16 +679,17 @@ const App = () => {
               BASYC: Tu aliado en <span style={{ color: '#0056b3' }}>seguridad</span>, <span style={{ color: '#10b981' }}>armonía</span>, <span style={{ color: '#f59e0b' }}>confianza</span> y <span style={{ color: '#8b5cf6' }}>paz</span>
             </h1>
             <p style={{
-              fontSize: '1.125rem',
+              fontSize: '1.25rem',
               marginBottom: '2rem',
               color: '#4b5563',
               maxWidth: '768px',
-              margin: '0 auto'
+              margin: '0 auto 2rem auto'
             }}>
               Soluciones integrales de seguros y fianzas que protegen lo que más te importa. Tranquilidad y protección para tu vida, familia y negocio.
             </p>
             <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', justifyContent: 'center' }}>
               <button
+                type="button"
                 onClick={() => scrollToSection("servicios")}
                 style={{
                   backgroundColor: '#0056b3',
@@ -636,12 +698,16 @@ const App = () => {
                   borderRadius: '0.5rem',
                   fontWeight: '600',
                   border: 'none',
-                  cursor: 'pointer'
+                  cursor: 'pointer',
+                  transition: 'transform 0.2s'
                 }}
+                onMouseEnter={(e) => e.target.style.transform = 'scale(1.05)'}
+                onMouseLeave={(e) => e.target.style.transform = 'scale(1)'}
               >
                 Conoce nuestros servicios
               </button>
               <button
+                type="button"
                 onClick={() => scrollToSection("contacto")}
                 style={{
                   border: '2px solid #0056b3',
@@ -650,7 +716,16 @@ const App = () => {
                   borderRadius: '0.5rem',
                   fontWeight: '600',
                   backgroundColor: 'transparent',
-                  cursor: 'pointer'
+                  cursor: 'pointer',
+                  transition: 'all 0.2s'
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.backgroundColor = '#0056b3';
+                  e.target.style.color = 'white';
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.backgroundColor = 'transparent';
+                  e.target.style.color = '#0056b3';
                 }}
               >
                 Cotiza ahora
@@ -663,38 +738,44 @@ const App = () => {
         <section id="valores" style={{ padding: '5rem 0', backgroundColor: 'white' }}>
           <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 1.5rem' }}>
             <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
-              <h2 style={{ fontSize: '2.25rem', fontWeight: 'bold', color: '#1f2937', marginBottom: '1rem' }}>
+              <h2 style={{ fontSize: '2.5rem', fontWeight: 'bold', color: '#1f2937', marginBottom: '1rem' }}>
                 Nuestros Valores Fundamentales
               </h2>
               <p style={{ fontSize: '1.25rem', color: '#4b5563', maxWidth: '768px', margin: '0 auto' }}>
                 En BASYC, cada decisión que tomamos está guiada por estos cuatro pilares que definen quiénes somos y cómo servimos a nuestros clientes.
               </p>
             </div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '2rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2rem' }}>
               {valores.map((v, i) => (
                 <div key={i} style={{
                   backgroundColor: 'white',
-                  borderRadius: '0.75rem',
-                  boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
-                  overflow: 'hidden'
+                  borderRadius: '1rem',
+                  boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1)',
+                  overflow: 'hidden',
+                  transition: 'transform 0.3s, box-shadow 0.3s'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = 'translateY(-8px)';
+                  e.currentTarget.style.boxShadow = '0 20px 25px -5px rgba(0, 0, 0, 0.15)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.boxShadow = '0 10px 25px -5px rgba(0, 0, 0, 0.1)';
                 }}>
-                  <div style={{ height: '12rem', position: 'relative' }}>
-                    <img src={v.fondo} alt={v.nombre} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                    <div style={{
-                      position: 'absolute',
-                      inset: 0,
-                      background: 'linear-gradient(180deg, rgba(0,86,179,0.7), rgba(0,86,179,0.9))',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center'
-                    }}>
-                      <div style={{ textAlign: 'center', color: 'white' }}>
-                        <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>{v.icono}</div>
-                        <h3 style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>{v.nombre}</h3>
-                      </div>
+                  <div style={{
+                    height: '12rem',
+                    background: `linear-gradient(135deg, ${v.color || '#0056b3'} 0%, ${v.color || '#0056b3'}cc 100%)`,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    position: 'relative'
+                  }}>
+                    <div style={{ textAlign: 'center', color: 'white' }}>
+                      <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>{v.icono}</div>
+                      <h3 style={{ fontSize: '1.75rem', fontWeight: 'bold' }}>{v.nombre}</h3>
                     </div>
                   </div>
-                  <div style={{ padding: '1.5rem' }}>
+                  <div style={{ padding: '1.75rem' }}>
                     <p style={{ color: '#4b5563', lineHeight: 1.6 }}>{v.descripcion}</p>
                   </div>
                 </div>
@@ -707,23 +788,27 @@ const App = () => {
         <section id="servicios" style={{ padding: '5rem 0', backgroundColor: '#f9fafb' }}>
           <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 1.5rem' }}>
             <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
-              <h2 style={{ fontSize: '2.25rem', fontWeight: 'bold', color: '#1f2937', marginBottom: '1rem' }}>
+              <h2 style={{ fontSize: '2.5rem', fontWeight: 'bold', color: '#1f2937', marginBottom: '1rem' }}>
                 Nuestros Servicios
               </h2>
               <p style={{ fontSize: '1.25rem', color: '#4b5563', maxWidth: '768px', margin: '0 auto' }}>
                 Ofrecemos soluciones de seguros y fianzas personalizadas que reflejan nuestros valores fundamentales.
               </p>
             </div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
-              {servicios.map((s, i) => (
-                <div key={i} style={{
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '2rem' }}>
+              {servicios.map((s) => (
+                <div key={s.id} style={{
                   backgroundColor: 'white',
-                  borderRadius: '0.75rem',
-                  boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)'
-                }}>
+                  borderRadius: '1rem',
+                  boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
+                  overflow: 'hidden',
+                  transition: 'transform 0.3s'
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-5px)'}
+                onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}>
                   <div style={{
                     height: '12rem',
-                    backgroundColor: '#e5e7eb',
+                    backgroundColor: '#f3f4f6',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center'
@@ -733,8 +818,9 @@ const App = () => {
                         src={s.icono}
                         alt={s.titulo}
                         style={{
-                          width: '230px',
-                          height: '230px',
+// cambio de tamaño de imagines //
+                          width: '220px',
+                          height: '220px',
                           objectFit: 'contain'
                         }}
                       />
@@ -743,19 +829,20 @@ const App = () => {
                     )}
                   </div>
                   <div style={{ padding: '1.5rem' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', marginBottom: '1rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', marginBottom: '1rem', gap: '0.75rem' }}>
                       <div style={{
                         backgroundColor: getValorColor(s.valor),
                         color: 'white',
-                        padding: '0.25rem 0.5rem',
+                        padding: '0.25rem 0.75rem',
                         borderRadius: '9999px',
-                        fontSize: '0.875rem',
-                        fontWeight: 'medium'
+                        fontSize: '0.75rem',
+                        fontWeight: '600',
+                        textTransform: 'uppercase'
                       }}>
                         {s.valor}
                       </div>
                     </div>
-                    <h3 style={{ fontSize: '1.25rem', fontWeight: 'bold', color: '#1f2937', marginBottom: '1rem' }}>
+                    <h3 style={{ fontSize: '1.25rem', fontWeight: 'bold', color: '#1f2937', marginBottom: '0.75rem' }}>
                       {s.titulo}
                     </h3>
                     <p style={{ color: '#4b5563', lineHeight: 1.6 }}>{s.descripcion}</p>
@@ -770,7 +857,7 @@ const App = () => {
         <section id="aseguradoras" style={{ padding: '5rem 0', backgroundColor: 'white' }}>
           <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 1.5rem' }}>
             <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
-              <h2 style={{ fontSize: '2.25rem', fontWeight: 'bold', color: '#1f2937', marginBottom: '1rem' }}>
+              <h2 style={{ fontSize: '2.5rem', fontWeight: 'bold', color: '#1f2937', marginBottom: '1rem' }}>
                 Nuestras Aseguradoras Asociadas
               </h2>
               <p style={{ fontSize: '1.25rem', color: '#4b5563', maxWidth: '768px', margin: '0 auto' }}>
@@ -778,47 +865,26 @@ const App = () => {
               </p>
             </div>
 
+            {/* Marquee de logos */}
             <div style={{
               backgroundColor: '#f3f4f6',
-              borderRadius: '0.5rem',
-              padding: '1.5rem',
+              borderRadius: '1rem',
+              padding: '2rem',
               overflow: 'hidden',
               position: 'relative'
             }}>
               <div style={{
                 display: 'flex',
-                animation: 'marquee 30s linear infinite'
+                animation: 'marquee 30s linear infinite',
+                width: 'fit-content'
               }}>
-                {aseguradoras.map((a) => (
+                {[...aseguradoras, ...aseguradoras].map((a, index) => (
                   <div
-                    key={a.id}
+                    key={`${a.id}-${index}`}
                     style={{
                       flexShrink: 0,
                       margin: '0 2rem',
-                      opacity: selectedAseguradora?.id === a.id ? 1 : 0.8,
-                      transform: selectedAseguradora?.id === a.id ? 'scale(1.1)' : 'scale(1)',
-                      transition: 'all 0.3s ease',
-                      cursor: 'pointer'
-                    }}
-                    onClick={() => setSelectedAseguradora(a)}
-                  >
-                    <img
-                      src={a.logo}
-                      alt={a.nombre}
-                      style={{
-                        height: '5rem',
-                        objectFit: 'contain'
-                      }}
-                    />
-                  </div>
-                ))}
-                {aseguradoras.map((a) => (
-                  <div
-                    key={`copy-${a.id}`}
-                    style={{
-                      flexShrink: 0,
-                      margin: '0 2rem',
-                      opacity: selectedAseguradora?.id === a.id ? 1 : 0.8,
+                      opacity: selectedAseguradora?.id === a.id ? 1 : 0.7,
                       transform: selectedAseguradora?.id === a.id ? 'scale(1.1)' : 'scale(1)',
                       transition: 'all 0.3s ease',
                       cursor: 'pointer'
@@ -845,17 +911,17 @@ const App = () => {
                 color: '#6b7280',
                 fontSize: '1.125rem'
               }}>
-                👉 Selecciona una aseguradora para ver más detalles
+                🖱️ Selecciona una aseguradora para ver más detalles
               </div>
             )}
 
             {selectedAseguradora && (
               <div style={{
-                backgroundColor: 'rgba(199, 210, 254, 0.3)',
+                backgroundColor: '#f0f9ff',
                 borderRadius: '1rem',
                 padding: '2rem',
                 marginTop: '2rem',
-                border: '1px solid #bfdbfe',
+                border: '2px solid #0056b3',
                 textAlign: 'center'
               }}>
                 <img
@@ -863,22 +929,42 @@ const App = () => {
                   alt={selectedAseguradora.nombre}
                   style={{
                     height: '6rem',
-                    marginBottom: '1rem'
+                    marginBottom: '1rem',
+                    objectFit: 'contain'
                   }}
                 />
                 <h3 style={{
-                  fontSize: '1.5rem',
+                  fontSize: '1.75rem',
                   fontWeight: 'bold',
-                  color: '#1f2937'
+                  color: '#1f2937',
+                  marginBottom: '1rem'
                 }}>
                   {selectedAseguradora.nombre}
                 </h3>
                 <p style={{
                   color: '#4b5563',
-                  lineHeight: 1.6
+                  lineHeight: 1.6,
+                  maxWidth: '600px',
+                  margin: '0 auto'
                 }}>
                   {selectedAseguradora.descripcion}
                 </p>
+                <button
+                  type="button"
+                  onClick={() => scrollToSection("contacto")}
+                  style={{
+                    marginTop: '1.5rem',
+                    backgroundColor: '#0056b3',
+                    color: 'white',
+                    padding: '0.5rem 1.5rem',
+                    borderRadius: '0.5rem',
+                    border: 'none',
+                    cursor: 'pointer',
+                    fontWeight: '600'
+                  }}
+                >
+                  Cotizar con {selectedAseguradora.nombre}
+                </button>
               </div>
             )}
           </div>
@@ -898,14 +984,14 @@ const App = () => {
           }}>
             <div style={{
               maxWidth: '600px',
-              padding: '2rem',
+              padding: '2.5rem',
               backgroundColor: 'white',
-              borderRadius: '1rem',
-              boxShadow: '0 10px 30px rgba(0,0,0,0.05)',
+              borderRadius: '1.5rem',
+              boxShadow: '0 20px 25px -5px rgba(0,0,0,0.1)',
               border: '1px solid #e5e7eb'
             }}>
-              <div style={{ fontSize: '4rem', marginBottom: '1.5rem' }}>🚧</div>
-              <h1 style={{ fontSize: '2.25rem', fontWeight: '700', color: '#1f2937', marginBottom: '1rem' }}>
+              <div style={{ fontSize: '5rem', marginBottom: '1.5rem' }}>🚧</div>
+              <h1 style={{ fontSize: '2.5rem', fontWeight: '700', color: '#1f2937', marginBottom: '1rem' }}>
                 En construcción
               </h1>
               <p style={{ fontSize: '1.125rem', color: '#4b5563', marginBottom: '2rem' }}>
@@ -916,9 +1002,29 @@ const App = () => {
                   📅 Lanzamiento estimado: Q2 2026
                 </span>
                 <span style={{ background: '#fef3c7', color: '#92400e', padding: '0.5rem 1rem', borderRadius: '9999px', fontSize: '0.875rem' }}>
-                  📞 ¿Necesitas cotización urgente? <a href="tel:+525555555555" style={{ color: '#92400e', fontWeight: 'bold' }}>Llámanos</a>
+                  📞 ¿Necesitas cotización urgente? 
+                  <a href="tel:7224447736" style={{ color: '#92400e', fontWeight: 'bold', marginLeft: '0.25rem' }}>Llámanos</a>
                 </span>
               </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setActiveTab("inicio");
+                  scrollToSection("inicio");
+                }}
+                style={{
+                  marginTop: '2rem',
+                  backgroundColor: '#0056b3',
+                  color: 'white',
+                  padding: '0.75rem 2rem',
+                  borderRadius: '0.5rem',
+                  border: 'none',
+                  cursor: 'pointer',
+                  fontWeight: '600'
+                }}
+              >
+                Volver al inicio
+              </button>
               <p style={{ marginTop: '2rem', color: '#6b7280', fontStyle: 'italic' }}>
                 Gracias por confiar en BASYC — tu seguridad es nuestra prioridad.
               </p>
@@ -929,16 +1035,15 @@ const App = () => {
         {/* Nosotros */}
         <section id="nosotros" style={{
           padding: '5rem 0',
-          background: 'linear-gradient(to bottom, #dbeafe, #e0f2fe)',
-          color: 'black'
+          background: 'linear-gradient(135deg, #dbeafe 0%, #e0f2fe 100%)'
         }}>
           <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 1.5rem' }}>
             <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
-              <h2 style={{ fontSize: '2.25rem', fontWeight: 'bold', color: '#1f2937', marginBottom: '1rem' }}>
+              <h2 style={{ fontSize: '2.5rem', fontWeight: 'bold', color: '#1f2937', marginBottom: '1rem' }}>
                 Quiénes Somos
               </h2>
               <p style={{ fontSize: '1.125rem', color: '#4b5563', maxWidth: '768px', margin: '0 auto', lineHeight: 1.6 }}>
-                En <strong>BASYC</strong>, somos más que una correduría de seguros. Somos tu aliado estratégico en protección, con más de 15 años de experiencia ayudando a personas, familias y empresas.
+                En <strong>BASYC</strong>, somos más que una correduría de seguros. Somos tu aliado estratégico en protección, con más de 15 años de experiencia ayudando a personas, familias y empresas a encontrar la tranquilidad que merecen.
               </p>
             </div>
             <div style={{
@@ -946,26 +1051,34 @@ const App = () => {
               gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
               gap: '1.5rem',
               width: '100%',
-              maxWidth: '600px',
+              maxWidth: '800px',
               margin: '0 auto'
             }}>
-              {[{ valor: "15+", texto: "Años de experiencia" }, { valor: "5000+", texto: "Clientes satisfechos" }, { valor: "8", texto: "Aseguradoras asociadas" }, { valor: "100%", texto: "Satisfacción garantizada" }].map((item, i) => (
+              {[
+                { valor: "15+", texto: "Años de experiencia", color: "#0056b3" },
+                { valor: "5000+", texto: "Clientes satisfechos", color: "#4CAF50" },
+                { valor: "8", texto: "Aseguradoras asociadas", color: "#FF9800" },
+                { valor: "100%", texto: "Satisfacción garantizada", color: "#9C27B0" }
+              ].map((item, i) => (
                 <div key={i} style={{
                   backgroundColor: 'white',
-                  borderRadius: '0.5rem',
-                  padding: '1rem',
+                  borderRadius: '1rem',
+                  padding: '1.5rem',
                   textAlign: 'center',
-                  boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
-                }}>
+                  boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+                  transition: 'transform 0.3s'
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
+                onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}>
                   <div style={{
-                    fontSize: '2rem',
+                    fontSize: '2.5rem',
                     fontWeight: 'bold',
-                    color: ['#0056b3', '#4CAF50', '#FF9800', '#9C27B0'][i],
+                    color: item.color,
                     marginBottom: '0.5rem'
                   }}>
                     {item.valor}
                   </div>
-                  <div style={{ color: '#4b5563', fontWeight: 'medium' }}>
+                  <div style={{ color: '#4b5563', fontWeight: '500' }}>
                     {item.texto}
                   </div>
                 </div>
@@ -973,6 +1086,7 @@ const App = () => {
             </div>
             <div style={{ textAlign: 'center', marginTop: '3rem' }}>
               <button
+                type="button"
                 onClick={() => scrollToSection("contacto")}
                 style={{
                   backgroundColor: '#0056b3',
@@ -981,7 +1095,8 @@ const App = () => {
                   borderRadius: '0.5rem',
                   fontWeight: '600',
                   border: 'none',
-                  cursor: 'pointer'
+                  cursor: 'pointer',
+                  fontSize: '1rem'
                 }}
               >
                 Cotiza con nosotros
@@ -994,15 +1109,15 @@ const App = () => {
         <section id="contacto" style={{ padding: '5rem 0', backgroundColor: 'white' }}>
           <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 1.5rem' }}>
             <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
-              <h2 style={{ fontSize: '2.25rem', fontWeight: 'bold', color: '#1f2937', marginBottom: '1rem' }}>
+              <h2 style={{ fontSize: '2.5rem', fontWeight: 'bold', color: '#1f2937', marginBottom: '1rem' }}>
                 Contáctanos
               </h2>
               <p style={{ fontSize: '1.25rem', color: '#4b5563', maxWidth: '768px', margin: '0 auto' }}>
                 Estamos aquí para ayudarte. Cotiza tu seguro o fianza sin compromiso y recibe asesoría personalizada.
               </p>
             </div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '3rem' }}>
-              <div style={{ backgroundColor: '#f3f4f6', borderRadius: '0.75rem', padding: '2rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '3rem' }}>
+              <div style={{ backgroundColor: '#f9fafb', borderRadius: '1rem', padding: '2rem' }}>
                 <h3 style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#1f2937', marginBottom: '1.5rem' }}>
                   Envíanos un mensaje
                 </h3>
@@ -1017,7 +1132,8 @@ const App = () => {
                     style={{
                       padding: '0.75rem',
                       border: '1px solid #d1d5db',
-                      borderRadius: '0.375rem'
+                      borderRadius: '0.5rem',
+                      fontSize: '1rem'
                     }}
                   />
                   <input
@@ -1030,7 +1146,8 @@ const App = () => {
                     style={{
                       padding: '0.75rem',
                       border: '1px solid #d1d5db',
-                      borderRadius: '0.375rem'
+                      borderRadius: '0.5rem',
+                      fontSize: '1rem'
                     }}
                   />
                   <input
@@ -1043,7 +1160,8 @@ const App = () => {
                     style={{
                       padding: '0.75rem',
                       border: '1px solid #d1d5db',
-                      borderRadius: '0.375rem'
+                      borderRadius: '0.5rem',
+                      fontSize: '1rem'
                     }}
                   />
                   <textarea
@@ -1056,7 +1174,9 @@ const App = () => {
                     style={{
                       padding: '0.75rem',
                       border: '1px solid #d1d5db',
-                      borderRadius: '0.375rem'
+                      borderRadius: '0.5rem',
+                      fontSize: '1rem',
+                      resize: 'vertical'
                     }}
                   />
                   <button
@@ -1064,12 +1184,16 @@ const App = () => {
                     style={{
                       backgroundColor: '#0056b3',
                       color: 'white',
-                      padding: '0.75rem 0',
-                      borderRadius: '0.375rem',
+                      padding: '0.875rem 0',
+                      borderRadius: '0.5rem',
                       fontWeight: '600',
                       border: 'none',
-                      cursor: 'pointer'
+                      cursor: 'pointer',
+                      fontSize: '1rem',
+                      transition: 'background-color 0.2s'
                     }}
+                    onMouseEnter={(e) => e.target.style.backgroundColor = '#004099'}
+                    onMouseLeave={(e) => e.target.style.backgroundColor = '#0056b3'}
                   >
                     Enviar mensaje
                   </button>
@@ -1080,19 +1204,26 @@ const App = () => {
                   Otras formas de contacto
                 </h3>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                  <div style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    padding: '1.5rem',
-                    backgroundColor: '#10b981',
-                    color: 'white',
-                    borderRadius: '0.75rem',
-                    cursor: 'pointer'
-                  }} onClick={openWhatsApp}>
+                  <button
+                    type="button"
+                    onClick={openWhatsApp}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      padding: '1.25rem',
+                      backgroundColor: '#25D366',
+                      color: 'white',
+                      borderRadius: '1rem',
+                      cursor: 'pointer',
+                      border: 'none',
+                      width: '100%',
+                      textAlign: 'left'
+                    }}
+                  >
                     <div style={{
                       backgroundColor: 'rgba(255,255,255,0.2)',
                       padding: '0.75rem',
-                      borderRadius: '0.5rem',
+                      borderRadius: '0.75rem',
                       marginRight: '1rem'
                     }}>
                       <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
@@ -1100,22 +1231,23 @@ const App = () => {
                       </svg>
                     </div>
                     <div>
-                      <p style={{ fontWeight: '600', marginBottom: '0.25rem' }}>WhatsApp</p>
-                      <p>+527224447736</p>
+                      <p style={{ fontWeight: '600', marginBottom: '0.25rem', fontSize: '1rem' }}>WhatsApp</p>
+                      <p style={{ fontSize: '0.875rem' }}>+52 722 444 7736</p>
                     </div>
-                  </div>
+                  </button>
+
                   <div style={{
                     display: 'flex',
                     alignItems: 'center',
-                    padding: '1.5rem',
+                    padding: '1.25rem',
                     backgroundColor: '#3b82f6',
                     color: 'white',
-                    borderRadius: '0.75rem'
+                    borderRadius: '1rem'
                   }}>
                     <div style={{
                       backgroundColor: 'rgba(255,255,255,0.2)',
                       padding: '0.75rem',
-                      borderRadius: '0.5rem',
+                      borderRadius: '0.75rem',
                       marginRight: '1rem'
                     }}>
                       <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
@@ -1123,22 +1255,23 @@ const App = () => {
                       </svg>
                     </div>
                     <div>
-                      <p style={{ fontWeight: '600', marginBottom: '0.25rem' }}>Correo</p>
-                      <p>fb@basyc.com</p>
+                      <p style={{ fontWeight: '600', marginBottom: '0.25rem', fontSize: '1rem' }}>Correo</p>
+                      <p style={{ fontSize: '0.875rem' }}>fb@basyc.com</p>
                     </div>
                   </div>
+
                   <div style={{
                     display: 'flex',
                     alignItems: 'center',
-                    padding: '1.5rem',
+                    padding: '1.25rem',
                     backgroundColor: '#6b7280',
                     color: 'white',
-                    borderRadius: '0.75rem'
+                    borderRadius: '1rem'
                   }}>
                     <div style={{
                       backgroundColor: 'rgba(255,255,255,0.2)',
                       padding: '0.75rem',
-                      borderRadius: '0.5rem',
+                      borderRadius: '0.75rem',
                       marginRight: '1rem'
                     }}>
                       <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
@@ -1146,22 +1279,23 @@ const App = () => {
                       </svg>
                     </div>
                     <div>
-                      <p style={{ fontWeight: '600', marginBottom: '0.25rem' }}>Dirección</p>
-                      <p>Jaime Balmes, Col. Polanco<br/>Ciudad de México, C.P. 11520</p>
+                      <p style={{ fontWeight: '600', marginBottom: '0.25rem', fontSize: '1rem' }}>Dirección</p>
+                      <p style={{ fontSize: '0.875rem' }}>Jaime Balmes, Col. Polanco<br />Ciudad de México, C.P. 11520</p>
                     </div>
                   </div>
+
                   <div style={{
                     display: 'flex',
                     alignItems: 'center',
-                    padding: '1.5rem',
+                    padding: '1.25rem',
                     backgroundColor: '#8b5cf6',
                     color: 'white',
-                    borderRadius: '0.75rem'
+                    borderRadius: '1rem'
                   }}>
                     <div style={{
                       backgroundColor: 'rgba(255,255,255,0.2)',
                       padding: '0.75rem',
-                      borderRadius: '0.5rem',
+                      borderRadius: '0.75rem',
                       marginRight: '1rem'
                     }}>
                       <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
@@ -1169,8 +1303,8 @@ const App = () => {
                       </svg>
                     </div>
                     <div>
-                      <p style={{ fontWeight: '600', marginBottom: '0.25rem' }}>Horario</p>
-                      <p>Lunes a Viernes: 9:00 - 18:00<br/>Sábado: 10:00 - 14:00</p>
+                      <p style={{ fontWeight: '600', marginBottom: '0.25rem', fontSize: '1rem' }}>Horario</p>
+                      <p style={{ fontSize: '0.875rem' }}>Lunes a Viernes: 9:00 - 18:00<br />Sábado: 10:00 - 14:00</p>
                     </div>
                   </div>
                 </div>
@@ -1192,20 +1326,20 @@ const App = () => {
           }}>
             <div style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
               gap: '2rem',
               marginBottom: '2rem'
             }}>
-              <div style={{ gridColumn: 'span 2' }}>
+              <div>
                 <div style={{ display: 'flex', alignItems: 'center', marginBottom: '1rem' }}>
                   <img
                     src={require("./assets/brand/basyc-logo.png")}
                     alt="BASYC"
-                    style={{ height: '60px', marginRight: '0.75rem' }}
+                    style={{ height: '50px', marginRight: '0.75rem', objectFit: 'contain' }}
                   />
                   <div>
                     <h3 style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>BASYC</h3>
-                    <p style={{ color: '#93c5fd' }}>Seguros & Fianzas</p>
+                    <p style={{ color: '#93c5fd', fontSize: '0.875rem' }}>Seguros & Fianzas</p>
                   </div>
                 </div>
                 <p style={{
@@ -1222,6 +1356,7 @@ const App = () => {
                   {["Seguro de Daños", "Seguro de Automóvil", "Seguro de Vida", "Seguro de Salud", "Fianzas"].map((s) => (
                     <li key={s} style={{ marginBottom: '0.5rem' }}>
                       <button
+                        type="button"
                         onClick={() => scrollToSection("servicios")}
                         style={{
                           color: '#d1d5db',
@@ -1229,7 +1364,8 @@ const App = () => {
                           border: 'none',
                           cursor: 'pointer',
                           textAlign: 'left',
-                          width: '100%'
+                          padding: 0,
+                          fontSize: '0.875rem'
                         }}
                       >
                         {s}
@@ -1240,11 +1376,11 @@ const App = () => {
               </div>
               <div>
                 <h4 style={{ fontSize: '1.125rem', fontWeight: 'bold', marginBottom: '1rem' }}>Contacto</h4>
-                <ul style={{ listStyle: 'none', padding: 0, color: '#d1d5db' }}>
-                  <li>contacto@basyc.com</li>
-                  <li>+52 722 4447736</li>
-                  <li>Jaime Balmes, CDMX</li>
-                  <li>Lun-Vie: 9:00-18:00</li>
+                <ul style={{ listStyle: 'none', padding: 0, color: '#d1d5db', fontSize: '0.875rem' }}>
+                  <li style={{ marginBottom: '0.5rem' }}>📧 contacto@basyc.com</li>
+                  <li style={{ marginBottom: '0.5rem' }}>📞 +52 722 444 7736</li>
+                  <li style={{ marginBottom: '0.5rem' }}>📍 Jaime Balmes, CDMX</li>
+                  <li>🕐 Lun-Vie: 9:00-18:00</li>
                 </ul>
               </div>
             </div>
@@ -1252,7 +1388,8 @@ const App = () => {
               borderTop: '1px solid #374151',
               paddingTop: '1.5rem',
               textAlign: 'center',
-              color: '#9ca3af'
+              color: '#9ca3af',
+              fontSize: '0.875rem'
             }}>
               <p>&copy; 2024 BASYC Seguros & Fianzas. Todos los derechos reservados.</p>
             </div>
@@ -1261,11 +1398,11 @@ const App = () => {
 
         {/* Botones Flotantes */}
         
-        {/* Botón WhatsApp - CON EFECTO DE LATIDO (Izquierda) */}
+        {/* Botón WhatsApp - Izquierda */}
         <button
+          type="button"
           onClick={openWhatsApp}
           title="Contáctanos por WhatsApp"
-          className="pulse-whatsapp"
           style={{
             position: 'fixed',
             bottom: '2rem',
@@ -1283,29 +1420,27 @@ const App = () => {
             justifyContent: 'center',
             transition: 'transform 0.3s'
           }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.transform = 'scale(1.1)';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.transform = 'scale(1)';
-          }}
+          onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.1)'}
+          onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
         >
           <svg width="32" height="32" fill="white" viewBox="0 0 24 24">
             <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67-.001-.198.15-.794.966-.966 1.164-.173.199-.347.223-.62.124-.272-.1-.966-.356-1.828-.966-.653-.472-1.089-1.001-1.458-1.58-.361-.567-.176-1.066.025-1.515.188-.42.399-.9-.1-.9-.486-.001-.83.459-1.038.65-.207.19-.793.965-1.164 1.164-.173.199-.347.248-.571.124-.226-.124-1.04-1.248-1.41-2.373-.362-1.11-.15-2.038.025-2.864.175-.81.87-2.115 1.258-2.865.396-.764.787-1.227 1.177-1.828.381-.588.851-.43 1.362-.37.508.06 1.588.399 3.091 1.227 1.5.81 2.486 2.486 2.661 2.661.175.175.025.45-.1.65-.126.199-.5.374-.966.624-.463.25-.966.499-1.091.748-.126.25-.001.499.175.748s.424.523.773.872c.35.348.773.722.972.995.199.274.374.199.723.025.35-.175.995-.924 1.17-1.099.173-.174.372-.099.621.025.25.124 1.174.923 1.423.1172.25.25.499.374.674.573.175.199.274.348.399.523.126.175.051.324-.025.499-.7 1.573-1.04 2.096-.374.524-.698.449-.947.449z"/>
           </svg>
         </button>
 
-        {/* Botón Tawk.to - Asistente Virtual (Derecha) - SIN LATIDO */}
+        {/* Botón Tawk.to - Asistente Virtual - Derecha CON LATIDO */}
         <button
+          type="button"
           onClick={openTawk}
           title="Habla con nuestro asistente virtual"
+          className="pulse-tawk"
           style={{
             position: 'fixed',
             bottom: '2rem',
             right: '2rem',
             width: '100px',
             height: '100px',
-            borderRadius: '70%',
+            borderRadius: '50%',
             backgroundColor: '#0056b3',
             border: 'none',
             cursor: 'pointer',
