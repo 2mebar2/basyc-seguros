@@ -1256,7 +1256,7 @@ const App = () => {
                     </div>
                     <div>
                       <p style={{ fontWeight: '600', marginBottom: '0.25rem', fontSize: '1rem' }}>Correo</p>
-                      <p style={{ fontSize: '0.875rem' }}>fb@basyc.com</p>
+                      <p style={{ fontSize: '0.875rem' }}>fb@basyc.mx</p>
                     </div>
                   </div>
 
